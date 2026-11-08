@@ -1,62 +1,40 @@
 <!DOCTYPE html>
-<html lang="vi" class="h-full bg-[#FAFAFA]">
+<html lang="vi" class="h-full">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hệ Thống Cảnh Báo Nồng Độ CO2 Hầm Mỏ | Genesis ERP Edition V2</title>
-  
-  <!-- Tailwind CSS CDN -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hệ Thống Cảnh Báo Nồng Độ CO2 Hầm Mỏ | Genesis ERP Edition V4</title>
+
+  <!-- Google Fonts & Tailwind CSS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Google Fonts: DM Sans & JetBrains Mono -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=JetBrains+Mono:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
-  
-  <!-- Fontshare Font: General Sans -->
-  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@500,600,700&display=swap" rel="stylesheet">
-
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <!-- Font Awesome Pro Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <!-- Firebase App & Realtime Database SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
+  <!-- Tailwind Configuration -->
   <script>
     tailwind.config = {
       theme: {
         extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+            display: ['Plus Jakarta Sans', 'sans-serif'],
+          },
           colors: {
             brand: {
               DEFAULT: '#4F46E5',
               hover: '#4338CA',
               light: '#EEF2FF',
-              ring: 'rgba(79, 70, 229, 0.15)',
-            },
-            neutral: {
-              background: '#FAFAFA',
-              surface: '#FFFFFF',
-              border: '#E8E8EC',
-              subtle: '#F4F4F6',
-              textPrimary: '#0A0A0A',
-              textSecondary: '#6B6B6B',
-              muted: '#9C9C9C',
-            },
-            semantic: {
-              success: '#10B981',
-              warning: '#F59E0B',
-              danger: '#EF4444',
+              dark: '#312E81',
             }
-          },
-          fontFamily: {
-            display: ['General Sans', 'DM Sans', 'sans-serif'],
-            sans: ['DM Sans', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-          },
-          boxShadow: {
-            'card-hover': '0 8px 30px rgba(0, 0, 0, 0.06)',
-            'button-glow': '0 4px 12px rgba(79, 70, 229, 0.25)',
           }
         }
       }
@@ -64,986 +42,510 @@
   </script>
 
   <style>
-    @keyframes spinFan {
+    /* CSS Animations for Hardware Actuators */
+    @keyframes spin-clockwise {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
     .fan-spinning {
-      animation: spinFan linear infinite;
+      animation: spin-clockwise 1.2s linear infinite;
     }
-
-    @keyframes buzzerShake {
-      0%, 100% { transform: translateX(0) rotate(0deg); }
-      20% { transform: translateX(-2px) rotate(-4deg); }
-      40% { transform: translateX(2px) rotate(4deg); }
-      60% { transform: translateX(-2px) rotate(-3deg); }
-      80% { transform: translateX(2px) rotate(3deg); }
+    @keyframes buzzer-shake {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      20% { transform: scale(1.08) rotate(-6deg); }
+      40% { transform: scale(1.08) rotate(6deg); }
+      60% { transform: scale(1.08) rotate(-4deg); }
+      80% { transform: scale(1.08) rotate(4deg); }
     }
     .buzzer-shaking {
-      animation: buzzerShake 0.2s infinite;
+      animation: buzzer-shake 0.4s ease-in-out infinite;
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+    .pulse-ring-effect {
+      animation: pulse-ring 1.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
 
-    @keyframes pulseRing {
-      0% { transform: scale(0.95); opacity: 0.8; }
-      100% { transform: scale(1.6); opacity: 0; }
+    /* Custom Slim Scrollbars */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
     }
-    .pulse-ring-effect::before {
-      content: '';
-      position: absolute;
-      inset: -4px;
-      border-radius: 9999px;
-      border: 2px solid #EF4444;
-      animation: pulseRing 1s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    ::-webkit-scrollbar-track {
+      background: #111;
     }
-
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #FAFAFA; }
-    ::-webkit-scrollbar-thumb { background: #D4D4D8; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #A1A1AA; }
-
-    #serialLogBox::-webkit-scrollbar { width: 5px; }
-    #serialLogBox::-webkit-scrollbar-track { background: #111111; }
-    #serialLogBox::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
-    #serialLogBox::-webkit-scrollbar-thumb:hover { background: #4B5563; }
+    ::-webkit-scrollbar-thumb {
+      background: #374151;
+      border-radius: 2px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4B5563;
+    }
   </style>
 </head>
-<body class="bg-[#FAFAFA] text-[#0A0A0A] font-sans min-h-screen flex flex-col antialiased selection:bg-brand selection:text-white">
 
-  <!-- ================= HEADER (Genesis Navbar) ================= -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-[#E8E8EC]">
-    <div class="max-w-[1280px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+<body class="bg-[#FAFAFA] text-[#0A0A0A] font-sans h-screen max-h-screen overflow-hidden flex flex-col antialiased selection:bg-brand selection:text-white">
+
+  <!-- ================= COMPACT HEADER ================= -->
+  <header class="h-12 bg-white/95 backdrop-blur-md border-b border-[#E8E8EC] shrink-0 z-40 px-3 sm:px-4 flex items-center justify-between gap-2">
+    
+    <!-- Left: Brand & Status Badges -->
+    <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+      <div class="w-8 h-8 rounded-lg bg-[#0A0A0A] text-white flex items-center justify-center shrink-0 shadow-sm">
+        <i class="fa-solid fa-helmet-safety text-amber-400 text-sm"></i>
+      </div>
+      <div class="flex items-center gap-2 min-w-0">
+        <h1 class="font-display font-bold text-sm sm:text-base tracking-tight text-[#0A0A0A] truncate">
+          Giám Sát Khí CO2 Hầm Mỏ
+        </h1>
+        <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-brand/10 text-brand border border-brand/20 hidden sm:inline-block">V4.0</span>
+        <span id="connBadge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-50 text-amber-700 border border-amber-200 shrink-0">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+          Cloud...
+        </span>
+        <span id="esp32ConnBadge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-rose-50 text-rose-700 border border-rose-200 shrink-0">
+          <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span>
+          ESP32: Đang kết nối...
+        </span>
+      </div>
+    </div>
+
+    <!-- Center/Right: System Mode Toggle & Navigation Tabs -->
+    <div class="flex items-center gap-2 shrink-0">
       
-      <!-- Brand & Title -->
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-[#0A0A0A] text-white flex items-center justify-center font-mono font-bold text-base shadow-sm">
-          <i class="fa-solid fa-helmet-safety text-amber-400"></i>
-        </div>
-        <div>
-          <div class="flex items-center gap-2.5">
-            <h1 class="font-display font-bold text-base sm:text-lg tracking-tight text-[#0A0A0A]">
-              Giám Sát Khí CO2 Hầm Mỏ
-            </h1>
-            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-brand/10 text-brand border border-brand/20">V2.0 ERP</span>
-            <span id="connBadge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-amber-50 text-amber-700 border border-amber-200">
-              <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-              Đang kết nối Firebase...
-            </span>
-          </div>
-          <p class="text-xs text-[#6B6B6B] hidden sm:block">Đo nồng độ CO2 (PPM chuẩn Datasheet MQ-135) & Điều khiển thông gió 2 quạt, 3 đèn, còi</p>
-        </div>
+      <!-- Chế độ vận hành (Compact Switch) -->
+      <div class="flex items-center bg-[#F4F4F6] p-0.5 rounded-md border border-[#E8E8EC]">
+        <button id="btnModeAuto" onclick="setSystemMode('AUTO')" class="px-2.5 py-1 rounded-[4px] text-[11px] font-bold uppercase tracking-wider transition-all bg-brand text-white shadow-sm flex items-center gap-1">
+          <i class="fa-solid fa-robot text-[10px]"></i>Auto
+        </button>
+        <button id="btnModeManual" onclick="setSystemMode('MANUAL')" class="px-2.5 py-1 rounded-[4px] text-[11px] font-bold uppercase tracking-wider transition-all text-[#6B6B6B] hover:text-[#0A0A0A] flex items-center gap-1">
+          <i class="fa-solid fa-sliders text-[10px]"></i>Manual
+        </button>
+      </div>
+
+      <!-- Sync Time Box -->
+      <div class="hidden md:flex items-center gap-1 text-[11px] font-mono bg-[#FAFAFA] border border-[#E8E8EC] px-2 py-1 rounded">
+        <span class="text-[#888]">Đồng bộ:</span>
+        <span id="lastSyncTime" class="text-emerald-600 font-bold">Chờ...</span>
       </div>
 
       <!-- Navigation Tabs -->
-      <nav class="flex items-center gap-1 bg-[#F4F4F6] p-1 rounded-md border border-[#E8E8EC]">
-        <button onclick="switchTab('dashboard')" id="tabBtnDashboard" class="px-3 py-1.5 rounded-[4px] text-xs font-medium transition-all bg-white text-[#0A0A0A] shadow-sm">
-          <i class="fa-solid fa-gauge-high mr-1.5 text-brand"></i>Bảng điều khiển
+      <nav class="flex items-center gap-0.5 bg-[#F4F4F6] p-0.5 rounded-md border border-[#E8E8EC]">
+        <button onclick="switchTab('dashboard')" id="tabBtnDashboard" class="px-2.5 py-1 rounded-[4px] text-xs font-semibold transition-all bg-white text-[#0A0A0A] shadow-sm flex items-center gap-1">
+          <i class="fa-solid fa-gauge-high text-brand text-xs"></i>Bảng điều khiển
         </button>
-        <button onclick="switchTab('code')" id="tabBtnCode" class="px-3 py-1.5 rounded-[4px] text-xs font-medium transition-all text-[#6B6B6B] hover:text-[#0A0A0A]">
-          <i class="fa-solid fa-code mr-1.5"></i>Code ESP32 V2
-        </button>
-        <button onclick="switchTab('wiring')" id="tabBtnWiring" class="px-3 py-1.5 rounded-[4px] text-xs font-medium transition-all text-[#6B6B6B] hover:text-[#0A0A0A]">
-          <i class="fa-solid fa-diagram-project mr-1.5"></i>Sơ đồ đấu nối
+        <button onclick="switchTab('wiring')" id="tabBtnWiring" class="px-2.5 py-1 rounded-[4px] text-xs font-semibold transition-all text-[#6B6B6B] hover:text-[#0A0A0A] flex items-center gap-1">
+          <i class="fa-solid fa-diagram-project text-xs"></i>Sơ đồ đấu nối
         </button>
       </nav>
 
     </div>
   </header>
 
-  <!-- ================= MAIN CONTAINER ================= -->
-  <main class="flex-1 max-w-[1280px] w-full mx-auto px-4 sm:px-6 py-6">
+  <!-- ================= SINGLE-SCREEN MAIN VIEWPORT ================= -->
+  <main class="flex-1 min-h-0 p-2.5 flex flex-col gap-2.5 overflow-hidden">
 
-    <!-- ================= TAB 1: DASHBOARD ================= -->
-    <div id="tabDashboard" class="space-y-6">
+    <!-- ================= TAB 1: DASHBOARD (FIT 100% SINGLE SCREEN) ================= -->
+    <div id="tabDashboard" class="flex-1 min-h-0 flex flex-col gap-2.5 overflow-hidden">
 
-      <!-- TOP SECTION: SYSTEM MODE & CLOUD STATUS -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- ROW 1: SENSOR (4 Cols) | 2 FANS (4.5 Cols) | 3 LEDS & BUZZER (3.5 Cols) -->
+      <div class="flex-[1.15] min-h-0 grid grid-cols-12 gap-2.5">
         
-        <!-- Chế độ vận hành AUTO / MANUAL -->
-        <div class="lg:col-span-7 bg-white border border-[#E8E8EC] rounded-xl p-5 shadow-sm hover:shadow-card-hover transition-all duration-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div class="flex items-start gap-3.5">
-            <div id="modeIconBox" class="w-10 h-10 rounded-lg bg-brand-light text-brand flex items-center justify-center shrink-0 mt-0.5 border border-brand/10">
-              <i id="modeIcon" class="fa-solid fa-wand-magic-sparkles text-base"></i>
-            </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="text-xs font-semibold text-[#6B6B6B] uppercase tracking-wider">Chế độ vận hành</span>
-                <span id="modeTitleBadge" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-brand-light text-brand border border-brand/20">
-                  AUTO - TỰ ĐỘNG
-                </span>
-              </div>
-              <p id="modeDesc" class="text-xs text-[#6B6B6B] mt-1 leading-relaxed">
-                Hệ thống tự động thông gió và cảnh báo theo các mức ngưỡng nồng độ khí CO2 đo được.
-              </p>
-            </div>
-          </div>
-
-          <!-- Mode Toggle Switch -->
-          <div class="flex items-center bg-[#F4F4F6] p-1 rounded-md border border-[#E8E8EC] shrink-0 self-start sm:self-center">
-            <button id="btnModeAuto" onclick="setSystemMode('AUTO')" class="px-3.5 py-1.5 rounded-[4px] text-xs font-semibold uppercase tracking-wider transition-all bg-brand text-white shadow-button-glow">
-              <i class="fa-solid fa-robot mr-1.5"></i>Auto
-            </button>
-            <button id="btnModeManual" onclick="setSystemMode('MANUAL')" class="px-3.5 py-1.5 rounded-[4px] text-xs font-semibold uppercase tracking-wider transition-all text-[#6B6B6B] hover:text-[#0A0A0A]">
-              <i class="fa-solid fa-sliders mr-1.5"></i>Manual
-            </button>
-          </div>
-        </div>
-
-        <!-- Cloud Data Source Configuration -->
-        <div class="lg:col-span-5 bg-white border border-[#E8E8EC] rounded-xl p-5 shadow-sm hover:shadow-card-hover transition-all duration-200 flex flex-col justify-between gap-3">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold text-[#0A0A0A] flex items-center gap-1.5">
-              <i class="fa-solid fa-cloud text-amber-500"></i> Firebase Realtime Cloud
-            </span>
-            <span class="text-[11px] font-mono text-[#6B6B6B]">DB: automatic-138ef</span>
-          </div>
-
-          <div class="flex items-center gap-2">
-            <div class="flex-1 bg-[#FAFAFA] border border-[#E8E8EC] rounded-md px-3 py-1.5 text-xs font-mono text-[#0A0A0A] flex items-center justify-between">
-              <span class="text-[#6B6B6B]">Đồng bộ:</span>
-              <span id="lastSyncTime" class="text-emerald-600 font-bold">Chờ dữ liệu...</span>
-            </div>
-            <button id="btnTestSound" onclick="toggleWebAudio()" class="px-3 py-1.5 rounded-md bg-[#F4F4F6] hover:bg-gray-200 border border-[#E8E8EC] text-xs font-medium text-[#0A0A0A] transition flex items-center gap-1.5 shrink-0" title="Bật/Tắt âm thanh còi trên trình duyệt">
-              <i id="soundIcon" class="fa-solid fa-volume-xmark text-[#9C9C9C]"></i>
-              <span id="soundText">Âm còi: Tắt</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- MAIN GRID: CẢM BIẾN CO2 (LEFT 5 COL) & THIẾT BỊ ĐIỀU KHIỂN (RIGHT 7 COL) -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-        <!-- CỘT TRÁI (5 CỘT): MQ-135 GAUGE & CẤU HÌNH NGƯỠNG -->
-        <div class="lg:col-span-5 flex flex-col gap-6">
+        <!-- CARD 1: CẢM BIẾN KHÍ CO2 MQ-135 (COL-SPAN-4) -->
+        <div class="col-span-12 lg:col-span-4 bg-white border border-[#E8E8EC] rounded-xl p-3 shadow-sm flex flex-col justify-between min-h-0 relative overflow-hidden">
           
-          <div class="bg-white border border-[#E8E8EC] rounded-xl p-5 shadow-sm hover:shadow-card-hover transition-all duration-200">
-            <div class="flex items-center justify-between mb-4 pb-3 border-b border-[#E8E8EC]">
-              <div>
-                <h2 class="font-display font-bold text-base text-[#0A0A0A] flex items-center gap-2">
-                  <i class="fa-solid fa-wind text-brand"></i>
-                  Cảm Biến Khí CO2 Hầm Mỏ (MQ-135)
-                </h2>
-                <p class="text-xs text-[#6B6B6B] mt-0.5">Tính toán theo chuẩn Datasheet đường cong đặc tính CO2</p>
-              </div>
-              <span id="levelBadge" class="px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
-                Mức 1 • Trong lành
-              </span>
-            </div>
+          <!-- Card Header -->
+          <div class="flex items-center justify-between pb-2 border-b border-[#E8E8EC] shrink-0">
+            <h2 class="font-display font-bold text-xs text-[#0A0A0A] flex items-center gap-1.5">
+              <i class="fa-solid fa-wind text-brand text-sm"></i>
+              Cảm Biến Khí CO2 (MQ-135)
+            </h2>
+            <span id="levelBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
+              Mức 1 • Trong lành
+            </span>
+          </div>
 
-            <!-- SVG Gauge Arc -->
-            <div class="relative flex flex-col items-center justify-center my-2">
-              <svg class="w-64 h-36 overflow-visible" viewBox="0 0 200 110">
-                <!-- Track -->
-                <path d="M 20 95 A 80 80 0 0 1 180 95" fill="none" stroke="#F4F4F6" stroke-width="14" stroke-linecap="round" />
-                <!-- Dynamic Value Arc -->
-                <path id="gaugeArc" d="M 20 95 A 80 80 0 0 1 180 95" fill="none" stroke="#10B981" stroke-width="14" stroke-linecap="round"
+          <!-- Gauge + Big Value in One Row -->
+          <div class="flex items-center justify-around py-1 shrink-0">
+            <!-- Compact SVG Gauge -->
+            <div class="relative flex flex-col items-center justify-center">
+              <svg class="w-36 h-20 overflow-visible" viewBox="0 0 200 110">
+                <path d="M 20 95 A 80 80 0 0 1 180 95" fill="none" stroke="#F4F4F6" stroke-width="15" stroke-linecap="round" />
+                <path id="gaugeArc" d="M 20 95 A 80 80 0 0 1 180 95" fill="none" stroke="#10B981" stroke-width="15" stroke-linecap="round"
                   stroke-dasharray="251.2" stroke-dashoffset="251.2" class="transition-all duration-300 ease-out" />
-                <!-- Scale Marks -->
-                <text x="10" y="108" fill="#9C9C9C" font-size="8" font-family="JetBrains Mono">400</text>
-                <text id="gaugeMark1" x="38" y="32" fill="#9C9C9C" font-size="8" font-family="JetBrains Mono">1000</text>
-                <text id="gaugeMark2" x="92" y="12" fill="#9C9C9C" font-size="8" font-family="JetBrains Mono">2000</text>
-                <text id="gaugeMark3" x="146" y="32" fill="#9C9C9C" font-size="8" font-family="JetBrains Mono">3000</text>
-                <text x="170" y="108" fill="#9C9C9C" font-size="8" font-family="JetBrains Mono">5000+</text>
+                <text x="12" y="106" fill="#9C9C9C" font-size="9" font-family="JetBrains Mono">400</text>
+                <text id="gaugeMark1" x="38" y="32" fill="#9C9C9C" font-size="9" font-family="JetBrains Mono">1000</text>
+                <text id="gaugeMark2" x="92" y="14" fill="#9C9C9C" font-size="9" font-family="JetBrains Mono">2000</text>
+                <text id="gaugeMark3" x="146" y="32" fill="#9C9C9C" font-size="9" font-family="JetBrains Mono">3000</text>
+                <text x="168" y="106" fill="#9C9C9C" font-size="9" font-family="JetBrains Mono">5000+</text>
               </svg>
-
-              <!-- Central Numerical Value (PPM CHUẨN DATASHEET) -->
-              <div class="text-center -mt-12">
-                <span class="text-[10px] font-semibold uppercase tracking-widest text-[#9C9C9C]">Nồng độ CO2 Thực Tế</span>
-                <div class="flex items-baseline justify-center gap-1 mt-0.5">
-                  <div id="co2PpmText" class="font-display text-4xl font-extrabold text-[#0A0A0A] tracking-tight leading-none">400</div>
-                  <span class="font-mono text-sm font-bold text-brand">PPM</span>
-                </div>
-                <div class="flex items-center justify-center gap-3 mt-1.5 text-[11px] font-mono text-[#6B6B6B]">
-                  <span>ADC: <strong id="adcValueText" class="text-[#0A0A0A]">0</strong></span>
-                  <span>•</span>
-                  <span id="voltageText">Điện áp: ~0.00 V</span>
-                </div>
-              </div>
             </div>
 
-            <!-- Header for Auto Rules & Threshold Edit Button -->
-            <div class="mt-4 pt-3 border-t border-[#E8E8EC] flex items-center justify-between">
-              <span class="text-[#6B6B6B] font-semibold text-[11px] uppercase tracking-wider">
+            <!-- Big PPM Value -->
+            <div class="text-right">
+              <span class="text-[9px] font-bold uppercase tracking-wider text-[#9C9C9C]">Nồng độ CO2 Thực Tế</span>
+              <div class="flex items-baseline justify-end gap-1">
+                <div id="co2PpmText" class="font-display text-3xl font-extrabold text-[#0A0A0A] tracking-tight leading-none">400</div>
+                <span class="font-mono text-xs font-bold text-brand">PPM</span>
+              </div>
+              <div class="flex items-center justify-end gap-2 text-[10px] font-mono text-[#6B6B6B] mt-0.5">
+                <span>ADC: <strong id="adcValueText" class="text-[#0A0A0A]">0</strong></span>
+                <span>•</span>
+                <span id="voltageText">Điện áp: ~0.00 V</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom: 4 Rules Table & Customizable Thresholds Form as Overlay -->
+          <div class="relative flex-1 min-h-0 flex flex-col justify-end pt-1 border-t border-[#E8E8EC]">
+            
+            <div class="flex items-center justify-between mb-1 shrink-0">
+              <span class="text-[#6B6B6B] font-bold text-[10px] uppercase tracking-wider">
                 Quy tắc tự động (4 Ngưỡng):
               </span>
-              <button onclick="toggleThresholdPanel()" id="btnToggleThreshold" class="px-2.5 py-1 rounded bg-brand-light text-brand hover:bg-brand/20 text-xs font-semibold transition flex items-center gap-1.5 border border-brand/20">
-                <i class="fa-solid fa-sliders text-[11px]"></i>
+              <button onclick="toggleThresholdPanel()" id="btnToggleThreshold" class="px-2 py-0.5 rounded bg-brand-light text-brand hover:bg-brand/20 text-[10px] font-bold transition flex items-center gap-1 border border-brand/20">
+                <i class="fa-solid fa-sliders text-[9px]"></i>
                 <span id="txtBtnThreshold">Chỉnh sửa mức đặt</span>
               </button>
             </div>
 
-            <!-- PANEL CHỈNH SỬA MỨC ĐẶT (USER CUSTOMIZABLE THRESHOLDS) -->
-            <div id="thresholdConfigPanel" class="hidden mt-3 p-3.5 rounded-lg bg-gray-50 border border-brand/20 space-y-3 transition-all">
-              <div class="flex items-center justify-between pb-2 border-b border-gray-200">
+            <!-- 4 Dynamic Rules Table Rows -->
+            <div class="space-y-1 text-[10px]">
+              <div id="ruleRow1" class="flex items-center justify-between px-2 py-1 rounded bg-[#FAFAFA] border border-[#E8E8EC] transition">
+                <span id="ruleLabel1" class="font-semibold text-emerald-600">● Mức 1 (&lt; 1000)</span>
+                <span class="font-mono text-[#6B6B6B]">Quạt: 20% | Đèn: TẮT | Còi: TẮT</span>
+              </div>
+              <div id="ruleRow2" class="flex items-center justify-between px-2 py-1 rounded bg-[#FAFAFA] border border-[#E8E8EC] opacity-60 transition">
+                <span id="ruleLabel2" class="font-semibold text-amber-600">● Mức 2 (1000 - 1999)</span>
+                <span class="font-mono text-[#6B6B6B]">Quạt: 50% | Đèn 1: BẬT | Còi: TẮT</span>
+              </div>
+              <div id="ruleRow3" class="flex items-center justify-between px-2 py-1 rounded bg-[#FAFAFA] border border-[#E8E8EC] opacity-60 transition">
+                <span id="ruleLabel3" class="font-semibold text-orange-600">● Mức 3 (2000 - 2999)</span>
+                <span class="font-mono text-[#6B6B6B]">Quạt: 70% | Đèn 1,2: BẬT | Còi: TẮT</span>
+              </div>
+              <div id="ruleRow4" class="flex items-center justify-between px-2 py-1 rounded bg-[#FAFAFA] border border-[#E8E8EC] opacity-60 transition">
+                <span id="ruleLabel4" class="font-semibold text-rose-600">● Mức 4 (&ge; 3000)</span>
+                <span class="font-mono text-[#6B6B6B]">Quạt: 100% | Cả 3 Đèn: BẬT | Còi: BẬT</span>
+              </div>
+            </div>
+
+            <!-- Modal Popover Inside Card: Edit Thresholds -->
+            <div id="thresholdConfigPanel" class="hidden absolute inset-0 bg-white/95 backdrop-blur-sm rounded-lg p-3 border border-brand/30 flex flex-col justify-between shadow-lg z-20 transition-all">
+              <div class="flex items-center justify-between pb-1.5 border-b border-gray-200">
                 <span class="text-xs font-bold text-[#0A0A0A] flex items-center gap-1.5">
-                  <i class="fa-solid fa-gear text-brand"></i> Cấu hình mức đặt ngưỡng (ADC / PPM)
+                  <i class="fa-solid fa-gear text-brand"></i> Cấu hình mức đặt ngưỡng (PPM / ADC)
                 </span>
-                <span class="text-[10px] text-gray-500 font-mono">Đồng bộ Firebase</span>
+                <button onclick="toggleThresholdPanel()" class="text-gray-400 hover:text-gray-600 text-xs">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
               </div>
-              <div class="grid grid-cols-3 gap-2 text-xs">
+              <div class="grid grid-cols-3 gap-2 text-xs py-1">
                 <div>
-                  <label class="block text-[11px] text-gray-600 font-medium mb-1">Ngưỡng 1 (Mức 2)</label>
+                  <label class="block text-[10px] text-gray-600 font-semibold mb-0.5">Ngưỡng 1 (Mức 2)</label>
                   <input type="number" id="inputTh1" value="1000" min="200" max="4000" step="50"
-                    class="w-full px-2 py-1.5 rounded border border-gray-300 font-mono text-xs focus:ring-1 focus:ring-brand focus:border-brand bg-white" />
+                    class="w-full px-2 py-1 rounded border border-gray-300 font-mono text-xs focus:ring-1 focus:ring-brand bg-white" />
                 </div>
                 <div>
-                  <label class="block text-[11px] text-gray-600 font-medium mb-1">Ngưỡng 2 (Mức 3)</label>
+                  <label class="block text-[10px] text-gray-600 font-semibold mb-0.5">Ngưỡng 2 (Mức 3)</label>
                   <input type="number" id="inputTh2" value="2000" min="500" max="4000" step="50"
-                    class="w-full px-2 py-1.5 rounded border border-gray-300 font-mono text-xs focus:ring-1 focus:ring-brand focus:border-brand bg-white" />
+                    class="w-full px-2 py-1 rounded border border-gray-300 font-mono text-xs focus:ring-1 focus:ring-brand bg-white" />
                 </div>
                 <div>
-                  <label class="block text-[11px] text-gray-600 font-medium mb-1">Ngưỡng 3 (Mức 4)</label>
+                  <label class="block text-[10px] text-gray-600 font-semibold mb-0.5">Ngưỡng 3 (Mức 4)</label>
                   <input type="number" id="inputTh3" value="3000" min="800" max="4095" step="50"
-                    class="w-full px-2 py-1.5 rounded border border-gray-300 font-mono text-xs focus:ring-1 focus:ring-brand focus:border-brand bg-white" />
+                    class="w-full px-2 py-1 rounded border border-gray-300 font-mono text-xs focus:ring-1 focus:ring-brand bg-white" />
                 </div>
               </div>
-              <div class="flex items-center justify-end gap-2 pt-1">
-                <button onclick="resetDefaultThresholds()" class="px-2.5 py-1 rounded bg-gray-200 hover:bg-gray-300 text-xs text-gray-700 font-medium transition">
+              <div class="flex items-center justify-end gap-2 pt-1 border-t border-gray-100">
+                <button onclick="resetDefaultThresholds()" class="px-2 py-1 rounded bg-gray-200 hover:bg-gray-300 text-[11px] text-gray-700 font-medium transition">
                   Mặc định
                 </button>
-                <button onclick="saveCustomThresholds()" class="px-3.5 py-1 rounded bg-brand hover:bg-brand-hover text-xs font-semibold text-white shadow-sm transition flex items-center gap-1.5">
+                <button onclick="saveCustomThresholds()" class="px-3 py-1 rounded bg-brand hover:bg-brand-hover text-[11px] font-semibold text-white shadow-sm transition flex items-center gap-1">
                   <i class="fa-solid fa-cloud-arrow-up"></i> Lưu mức đặt
                 </button>
               </div>
             </div>
 
-            <!-- Dynamic Auto Logic Rules Reference Table -->
-            <div class="mt-2 space-y-1.5 text-xs">
-              <div id="ruleRow1" class="flex items-center justify-between p-2 rounded-md bg-[#FAFAFA] border border-[#E8E8EC] transition">
-                <span id="ruleLabel1" class="font-medium text-emerald-600">● Mức 1 (&lt; 1000)</span>
-                <span class="font-mono text-[#6B6B6B] text-[11px]">Quạt: 20% | Đèn: TẮT | Còi: TẮT</span>
+          </div>
+        </div>
+
+        <!-- CARD 2: HỆ THỐNG 2 QUẠT HÚT THÔNG GIÓ (COL-SPAN-4.5) -->
+        <div class="col-span-12 lg:col-span-5 bg-white border border-[#E8E8EC] rounded-xl p-3 shadow-sm flex flex-col justify-between min-h-0">
+          
+          <!-- Card Header -->
+          <div class="flex items-center justify-between pb-2 border-b border-[#E8E8EC] shrink-0">
+            <h2 class="font-display font-bold text-xs text-[#0A0A0A] flex items-center gap-1.5">
+              <i class="fa-solid fa-fan text-brand text-sm"></i>
+              Hệ Thống 2 Quạt Hút Thông Gió
+            </h2>
+            <span id="fanLockBadge" class="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#F4F4F6] text-[#6B6B6B] border border-[#E8E8EC]">
+              <i class="fa-solid fa-lock mr-1"></i>Đang chạy AUTO
+            </span>
+          </div>
+
+          <!-- 2 Fans Grid Side-by-Side -->
+          <div class="grid grid-cols-2 gap-2 my-1.5 shrink-0">
+            <!-- Fan 1 -->
+            <div class="bg-[#FAFAFA] border border-[#E8E8EC] rounded-lg p-2 flex items-center gap-2.5">
+              <div class="relative w-11 h-11 rounded-full bg-white border border-[#E8E8EC] flex items-center justify-center shrink-0 shadow-sm">
+                <i id="fan1Icon" class="fa-solid fa-fan text-lg text-brand fan-spinning" style="animation-duration: 1.5s;"></i>
+                <span id="fan1BadgeState" class="absolute -bottom-1 px-1 bg-emerald-100 text-[8px] font-bold rounded text-emerald-700 border border-emerald-200">Đang chạy</span>
               </div>
-              <div id="ruleRow2" class="flex items-center justify-between p-2 rounded-md bg-[#FAFAFA] border border-[#E8E8EC] opacity-60 transition">
-                <span id="ruleLabel2" class="font-medium text-amber-600">● Mức 2 (1000 - 1999)</span>
-                <span class="font-mono text-[#6B6B6B] text-[11px]">Quạt: 50% | Đèn 1: BẬT | Còi: TẮT</span>
-              </div>
-              <div id="ruleRow3" class="flex items-center justify-between p-2 rounded-md bg-[#FAFAFA] border border-[#E8E8EC] opacity-60 transition">
-                <span id="ruleLabel3" class="font-medium text-orange-600">● Mức 3 (2000 - 2999)</span>
-                <span class="font-mono text-[#6B6B6B] text-[11px]">Quạt: 70% | Đèn 1,2: BẬT | Còi: TẮT</span>
-              </div>
-              <div id="ruleRow4" class="flex items-center justify-between p-2 rounded-md bg-[#FAFAFA] border border-[#E8E8EC] opacity-60 transition">
-                <span id="ruleLabel4" class="font-medium text-rose-600">● Mức 4 (&ge; 3000)</span>
-                <span class="font-mono text-[#6B6B6B] text-[11px]">Quạt: 100% | Cả 3 Đèn: BẬT | Còi: BẬT</span>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <span class="text-[11px] font-bold text-[#0A0A0A]">Quạt Hút 1</span>
+                  <span id="fan1PercentText" class="font-display text-sm font-bold text-brand">20%</span>
+                </div>
+                <div class="text-[10px] text-[#6B6B6B] font-mono mt-0.5">PWM: <span id="fan1DutyText" class="text-[#0A0A0A] font-semibold">204</span>/1023</div>
               </div>
             </div>
 
+            <!-- Fan 2 -->
+            <div class="bg-[#FAFAFA] border border-[#E8E8EC] rounded-lg p-2 flex items-center gap-2.5">
+              <div class="relative w-11 h-11 rounded-full bg-white border border-[#E8E8EC] flex items-center justify-center shrink-0 shadow-sm">
+                <i id="fan2Icon" class="fa-solid fa-fan text-lg text-brand fan-spinning" style="animation-duration: 1.5s;"></i>
+                <span id="fan2BadgeState" class="absolute -bottom-1 px-1 bg-emerald-100 text-[8px] font-bold rounded text-emerald-700 border border-emerald-200">Đang chạy</span>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <span class="text-[11px] font-bold text-[#0A0A0A]">Quạt Hút 2</span>
+                  <span id="fan2PercentText" class="font-display text-sm font-bold text-brand">20%</span>
+                </div>
+                <div class="text-[10px] text-[#6B6B6B] font-mono mt-0.5">PWM: <span id="fan2DutyText" class="text-[#0A0A0A] font-semibold">204</span>/1023</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Manual Controls Box -->
+          <div id="manualFanControls" class="bg-[#FAFAFA] border border-[#E8E8EC] rounded-lg p-2.5 opacity-40 pointer-events-none transition-opacity space-y-2 flex-1 flex flex-col justify-between">
+            <div class="flex items-center justify-between text-[11px]">
+              <span class="font-bold text-[#0A0A0A]">Điều khiển Quạt Thủ Công:</span>
+              <div class="flex items-center gap-1.5">
+                <button onclick="pushManualFanSpeed(0)" class="px-2 py-0.5 rounded bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-[10px] font-bold transition">
+                  TẮT
+                </button>
+                <button onclick="pushManualFanSpeed(100)" class="px-2 py-0.5 rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-[10px] font-bold transition">
+                  100%
+                </button>
+                <span id="manualFanSliderLabel" class="font-mono font-bold text-brand ml-1 text-xs">20%</span>
+              </div>
+            </div>
+
+            <!-- Slider -->
+            <input type="range" id="manualFanSlider" min="0" max="100" value="20" onchange="pushManualFanSpeed(this.value)" oninput="document.getElementById('manualFanSliderLabel').textContent = this.value + '%'"
+              class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-brand" />
+
+            <!-- 5 Quick Presets -->
+            <div class="grid grid-cols-5 gap-1">
+              <button onclick="pushManualFanSpeed(0)" class="py-1 rounded bg-white hover:bg-gray-100 text-[10px] font-bold text-rose-600 border border-[#E8E8EC] transition">0%</button>
+              <button onclick="pushManualFanSpeed(20)" class="py-1 rounded bg-white hover:bg-gray-100 text-[10px] font-bold text-[#0A0A0A] border border-[#E8E8EC] transition">20%</button>
+              <button onclick="pushManualFanSpeed(50)" class="py-1 rounded bg-white hover:bg-gray-100 text-[10px] font-bold text-[#0A0A0A] border border-[#E8E8EC] transition">50%</button>
+              <button onclick="pushManualFanSpeed(70)" class="py-1 rounded bg-white hover:bg-gray-100 text-[10px] font-bold text-[#0A0A0A] border border-[#E8E8EC] transition">70%</button>
+              <button onclick="pushManualFanSpeed(100)" class="py-1 rounded bg-brand hover:bg-brand-hover text-[10px] font-bold text-white shadow-sm transition">100%</button>
+            </div>
           </div>
 
         </div>
 
-        <!-- CỘT PHẢI (7 CỘT): ĐIỀU KHIỂN QUẠT, 3 ĐÈN VÀ CÒI -->
-        <div class="lg:col-span-7 flex flex-col gap-6">
-
-          <!-- 1. HỆ THỐNG 2 QUẠT HÚT KHÍ THÔNG GIÓ HẦM MỎ -->
-          <div class="bg-white border border-[#E8E8EC] rounded-xl p-5 shadow-sm hover:shadow-card-hover transition-all duration-200">
-            <div class="flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b border-[#E8E8EC]">
-              <div>
-                <h2 class="font-display font-bold text-base text-[#0A0A0A] flex items-center gap-2">
-                  <i class="fa-solid fa-fan text-brand"></i>
-                  Hệ Thống 2 Quạt Hút Thông Gió Hầm Mỏ
-                </h2>
-                <p class="text-xs text-[#6B6B6B] mt-0.5">Điều tốc thông gió khẩn cấp • Hút khí CO2 ra khỏi hầm lò</p>
-              </div>
-              <span id="fanLockBadge" class="text-xs font-medium px-2.5 py-1 rounded-md bg-[#F4F4F6] text-[#6B6B6B] border border-[#E8E8EC]">
-                <i class="fa-solid fa-lock mr-1"></i>Đang chạy AUTO
-              </span>
+        <!-- CARD 3: CỤM 3 ĐÈN LED & CÒI BÁO ĐỘNG (COL-SPAN-3.5) -->
+        <div class="col-span-12 lg:col-span-3 bg-white border border-[#E8E8EC] rounded-xl p-3 shadow-sm flex flex-col justify-between min-h-0">
+          
+          <!-- Section 1: Cụm 3 Đèn LED -->
+          <div>
+            <div class="flex items-center justify-between pb-1.5 border-b border-[#E8E8EC]">
+              <h3 class="font-display font-bold text-xs text-[#0A0A0A] flex items-center gap-1.5">
+                <i class="fa-solid fa-lightbulb text-amber-500"></i>
+                Cụm 3 Đèn LED
+              </h3>
+              <button id="btnAllLeds" onclick="toggleAllManualLeds()" disabled
+                class="px-2 py-0.5 rounded bg-[#F4F4F6] hover:bg-gray-200 text-[10px] font-bold text-[#0A0A0A] border border-[#E8E8EC] disabled:opacity-40 transition">
+                Đảo cả 3 LED
+              </button>
             </div>
 
-            <!-- Fans Visual Card Grid (KHÔNG HIỂN THỊ CHÂN GPIO THÔ THIỂN) -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-              <!-- Fan 1 -->
-              <div class="bg-[#FAFAFA] border border-[#E8E8EC] rounded-lg p-3.5 flex items-center gap-3.5">
-                <div class="relative w-14 h-14 rounded-full bg-white border border-[#E8E8EC] flex items-center justify-center shrink-0 shadow-sm">
-                  <i id="fan1Icon" class="fa-solid fa-fan text-2xl text-brand fan-spinning" style="animation-duration: 1.5s;"></i>
-                  <span id="fan1BadgeState" class="absolute -bottom-1 px-1.5 bg-emerald-100 text-[9px] font-medium rounded text-emerald-700 border border-emerald-200">Đang chạy</span>
+            <!-- 3 LED Bulbs Grid -->
+            <div class="grid grid-cols-3 gap-1.5 my-2">
+              <!-- LED 1 -->
+              <div class="bg-[#FAFAFA] border border-[#E8E8EC] rounded-lg p-1.5 flex flex-col items-center text-center cursor-pointer hover:border-amber-300 transition" onclick="toggleSingleLed(1)">
+                <div id="led1Bulb" class="w-8 h-8 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center transition-all duration-300 mb-1">
+                  <i class="fa-solid fa-lightbulb text-xs text-gray-400"></i>
                 </div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-[#0A0A0A]">Quạt Hút Khu Vực 1</span>
-                    <span id="fan1PercentText" class="font-display text-base font-bold text-brand">20%</span>
-                  </div>
-                  <div class="text-[11px] text-[#6B6B6B] mt-0.5">Thông gió cửa lò chính</div>
-                  <div class="text-[11px] text-[#6B6B6B] font-mono mt-0.5">Công suất PWM: <span id="fan1DutyText" class="text-[#0A0A0A] font-semibold">204</span> / 1023</div>
-                </div>
+                <span class="text-[10px] font-bold text-[#0A0A0A]">Đèn 1</span>
+                <button id="btnLed1" onclick="event.stopPropagation(); toggleSingleLed(1)"
+                  class="mt-1 w-full py-0.5 rounded text-[9px] font-bold uppercase bg-white text-[#6B6B6B] border border-[#E8E8EC] transition cursor-pointer">
+                  TẮT
+                </button>
               </div>
 
-              <!-- Fan 2 -->
-              <div class="bg-[#FAFAFA] border border-[#E8E8EC] rounded-lg p-3.5 flex items-center gap-3.5">
-                <div class="relative w-14 h-14 rounded-full bg-white border border-[#E8E8EC] flex items-center justify-center shrink-0 shadow-sm">
-                  <i id="fan2Icon" class="fa-solid fa-fan text-2xl text-brand fan-spinning" style="animation-duration: 1.5s;"></i>
-                  <span id="fan2BadgeState" class="absolute -bottom-1 px-1.5 bg-emerald-100 text-[9px] font-medium rounded text-emerald-700 border border-emerald-200">Đang chạy</span>
+              <!-- LED 2 -->
+              <div class="bg-[#FAFAFA] border border-[#E8E8EC] rounded-lg p-1.5 flex flex-col items-center text-center cursor-pointer hover:border-amber-300 transition" onclick="toggleSingleLed(2)">
+                <div id="led2Bulb" class="w-8 h-8 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center transition-all duration-300 mb-1">
+                  <i class="fa-solid fa-lightbulb text-xs text-gray-400"></i>
                 </div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-[#0A0A0A]">Quạt Hút Khu Vực 2</span>
-                    <span id="fan2PercentText" class="font-display text-base font-bold text-brand">20%</span>
-                  </div>
-                  <div class="text-[11px] text-[#6B6B6B] mt-0.5">Thông gió nhánh khai thác</div>
-                  <div class="text-[11px] text-[#6B6B6B] font-mono mt-0.5">Công suất PWM: <span id="fan2DutyText" class="text-[#0A0A0A] font-semibold">204</span> / 1023</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Manual Fan Speed Slider & ON/OFF Controls (TƯƠNG TÁC BẬT/TẮT QUẠT DỄ DÀNG) -->
-            <div id="manualFanControls" class="bg-[#FAFAFA] border border-[#E8E8EC] rounded-lg p-3.5 opacity-50 pointer-events-none transition-opacity space-y-3">
-              <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
-                <span class="font-semibold text-[#0A0A0A]">Điều khiển Quạt Thông Gió Thủ Công (Manual):</span>
-                <div class="flex items-center gap-1.5">
-                  <button onclick="pushManualFanSpeed(0)" class="px-2.5 py-1 rounded bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-semibold transition flex items-center gap-1">
-                    <i class="fa-solid fa-power-off"></i> TẮT QUẠT
-                  </button>
-                  <button onclick="pushManualFanSpeed(100)" class="px-2.5 py-1 rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-semibold transition flex items-center gap-1">
-                    <i class="fa-solid fa-bolt"></i> BẬT 100%
-                  </button>
-                  <span id="manualFanSliderLabel" class="font-mono font-bold text-brand ml-1">20% (Duty: 204)</span>
-                </div>
+                <span class="text-[10px] font-bold text-[#0A0A0A]">Đèn 2</span>
+                <button id="btnLed2" onclick="event.stopPropagation(); toggleSingleLed(2)"
+                  class="mt-1 w-full py-0.5 rounded text-[9px] font-bold uppercase bg-white text-[#6B6B6B] border border-[#E8E8EC] transition cursor-pointer">
+                  TẮT
+                </button>
               </div>
 
-              <input type="range" id="manualFanSlider" min="0" max="100" value="20" onchange="pushManualFanSpeed(this.value)" oninput="document.getElementById('manualFanSliderLabel').textContent = this.value + '%'"
-                class="w-full h-2.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-brand" />
-
-              <div class="grid grid-cols-5 gap-1.5">
-                <button onclick="pushManualFanSpeed(0)" class="py-1 rounded bg-white hover:bg-gray-100 text-xs font-medium text-rose-600 border border-[#E8E8EC] transition">0% (TẮT)</button>
-                <button onclick="pushManualFanSpeed(20)" class="py-1 rounded bg-white hover:bg-gray-100 text-xs font-medium text-[#0A0A0A] border border-[#E8E8EC] transition">20%</button>
-                <button onclick="pushManualFanSpeed(50)" class="py-1 rounded bg-white hover:bg-gray-100 text-xs font-medium text-[#0A0A0A] border border-[#E8E8EC] transition">50%</button>
-                <button onclick="pushManualFanSpeed(70)" class="py-1 rounded bg-white hover:bg-gray-100 text-xs font-medium text-[#0A0A0A] border border-[#E8E8EC] transition">70%</button>
-                <button onclick="pushManualFanSpeed(100)" class="py-1 rounded bg-brand hover:bg-brand-hover text-xs font-semibold text-white shadow-sm transition">100% (MAX)</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- 2. CỤM 3 ĐÈN LED & CÒI BÁO ĐỘNG (XÓA BỎ CÁC NHÃN GPIO) -->
-          <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-            
-            <!-- Cụm 3 Đèn LED Cảnh Báo (ĐÃ XÓA TẤT CẢ GPIO VÀ TỐI ƯU TƯƠNG TÁC) -->
-            <div class="md:col-span-7 bg-white border border-[#E8E8EC] rounded-xl p-5 shadow-sm hover:shadow-card-hover transition-all duration-200 flex flex-col justify-between">
-              <div>
-                <div class="flex items-center justify-between mb-3 pb-2 border-b border-[#E8E8EC]">
-                  <h3 class="font-display font-bold text-sm text-[#0A0A0A] flex items-center gap-2">
-                    <i class="fa-solid fa-lightbulb text-amber-500"></i>
-                    Cụm 3 Đèn LED Cảnh Báo
-                  </h3>
-                  <div class="flex items-center gap-1">
-                    <button id="btnAllLeds" onclick="toggleAllManualLeds()" disabled
-                      class="px-2 py-1 rounded bg-[#F4F4F6] hover:bg-gray-200 text-[11px] font-medium text-[#0A0A0A] border border-[#E8E8EC] disabled:opacity-40 transition" title="Bật/Tắt toàn bộ 3 đèn">
-                      Đảo cả 3 LED
-                    </button>
-                  </div>
+              <!-- LED 3 -->
+              <div class="bg-[#FAFAFA] border border-[#E8E8EC] rounded-lg p-1.5 flex flex-col items-center text-center cursor-pointer hover:border-rose-300 transition" onclick="toggleSingleLed(3)">
+                <div id="led3Bulb" class="w-8 h-8 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center transition-all duration-300 mb-1">
+                  <i class="fa-solid fa-lightbulb text-xs text-gray-400"></i>
                 </div>
-
-                <!-- 3 Bulbs Grid (Tên thân thiện người dùng, KHÔNG có GPIO) -->
-                <div class="grid grid-cols-3 gap-2.5 my-2">
-                  <!-- LED 1 -->
-                  <div class="bg-[#FAFAFA] border border-[#E8E8EC] rounded-lg p-2.5 flex flex-col items-center text-center cursor-pointer hover:border-amber-300 transition" onclick="toggleSingleLed(1)">
-                    <div id="led1Bulb" class="w-10 h-10 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center transition-all duration-300 mb-1.5">
-                      <i class="fa-solid fa-lightbulb text-base text-gray-400"></i>
-                    </div>
-                    <span class="text-xs font-bold text-[#0A0A0A]">Đèn Cảnh Báo 1</span>
-                    <span class="text-[10px] text-[#6B6B6B]">Mức 2 • Nhẹ</span>
-                    <button id="btnLed1" onclick="event.stopPropagation(); toggleSingleLed(1)"
-                      class="mt-2 w-full py-1.5 rounded text-[10px] font-bold uppercase bg-white text-[#6B6B6B] border border-[#E8E8EC] transition cursor-pointer">
-                      TẮT
-                    </button>
-                  </div>
-
-                  <!-- LED 2 -->
-                  <div class="bg-[#FAFAFA] border border-[#E8E8EC] rounded-lg p-2.5 flex flex-col items-center text-center cursor-pointer hover:border-amber-300 transition" onclick="toggleSingleLed(2)">
-                    <div id="led2Bulb" class="w-10 h-10 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center transition-all duration-300 mb-1.5">
-                      <i class="fa-solid fa-lightbulb text-base text-gray-400"></i>
-                    </div>
-                    <span class="text-xs font-bold text-[#0A0A0A]">Đèn Cảnh Báo 2</span>
-                    <span class="text-[10px] text-[#6B6B6B]">Mức 3 • Ô nhiễm</span>
-                    <button id="btnLed2" onclick="event.stopPropagation(); toggleSingleLed(2)"
-                      class="mt-2 w-full py-1.5 rounded text-[10px] font-bold uppercase bg-white text-[#6B6B6B] border border-[#E8E8EC] transition cursor-pointer">
-                      TẮT
-                    </button>
-                  </div>
-
-                  <!-- LED 3 -->
-                  <div class="bg-[#FAFAFA] border border-[#E8E8EC] rounded-lg p-2.5 flex flex-col items-center text-center cursor-pointer hover:border-rose-300 transition" onclick="toggleSingleLed(3)">
-                    <div id="led3Bulb" class="w-10 h-10 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center transition-all duration-300 mb-1.5">
-                      <i class="fa-solid fa-lightbulb text-base text-gray-400"></i>
-                    </div>
-                    <span class="text-xs font-bold text-[#0A0A0A]">Đèn Cảnh Báo 3</span>
-                    <span class="text-[10px] text-rose-600 font-semibold">Mức 4 • Nguy hiểm</span>
-                    <button id="btnLed3" onclick="event.stopPropagation(); toggleSingleLed(3)"
-                      class="mt-2 w-full py-1.5 rounded text-[10px] font-bold uppercase bg-white text-[#6B6B6B] border border-[#E8E8EC] transition cursor-pointer">
-                      TẮT
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Thanh trạng thái sạch sẽ, KHÔNG hiển thị GPIO -->
-              <div class="mt-2 text-[11px] text-[#6B6B6B] bg-[#FAFAFA] px-2.5 py-1.5 rounded border border-[#E8E8EC] flex items-center justify-between">
-                <span>Trạng thái đèn:</span>
-                <span id="ledStatusSummary" class="font-medium text-[#0A0A0A]">Đèn 1: TẮT | Đèn 2: TẮT | Đèn 3: TẮT</span>
-              </div>
-            </div>
-
-            <!-- Còi Báo Động Hầm Mỏ (Xóa bỏ GPIO) -->
-            <div class="md:col-span-5 bg-white border border-[#E8E8EC] rounded-xl p-5 shadow-sm hover:shadow-card-hover transition-all duration-200 flex flex-col justify-between">
-              <div>
-                <div class="flex items-center justify-between mb-2 pb-2 border-b border-[#E8E8EC]">
-                  <h3 class="font-display font-bold text-sm text-[#0A0A0A] flex items-center gap-2">
-                    <i class="fa-solid fa-bell text-rose-500"></i>
-                    Còi Báo Động Khẩn Cấp
-                  </h3>
-                  <span class="text-[10px] font-medium px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">Âm thanh</span>
-                </div>
-
-                <!-- Buzzer Icon -->
-                <div class="my-3 flex flex-col items-center justify-center">
-                  <div id="buzzerCircle" class="relative w-16 h-16 rounded-full bg-[#FAFAFA] border border-[#E8E8EC] flex items-center justify-center transition-all duration-300">
-                    <i id="buzzerIcon" class="fa-solid fa-volume-off text-2xl text-gray-400"></i>
-                  </div>
-                  <span id="buzzerStateLabel" class="mt-2 text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-gray-100 text-[#6B6B6B]">
-                    IM LẶNG (TẮT)
-                  </span>
-                </div>
-              </div>
-
-              <div class="space-y-2">
-                <button id="btnManualBuzzer" onclick="toggleManualBuzzer()" disabled
-                  class="w-full py-2 rounded-md font-bold text-xs uppercase tracking-wider bg-[#F4F4F6] hover:bg-gray-200 text-[#0A0A0A] border border-[#E8E8EC] disabled:opacity-40 transition">
-                  <i class="fa-solid fa-power-off mr-1.5"></i>Bật/Tắt Còi Báo Động
+                <span class="text-[10px] font-bold text-[#0A0A0A]">Đèn 3</span>
+                <button id="btnLed3" onclick="event.stopPropagation(); toggleSingleLed(3)"
+                  class="mt-1 w-full py-0.5 rounded text-[9px] font-bold uppercase bg-white text-[#6B6B6B] border border-[#E8E8EC] transition cursor-pointer">
+                  TẮT
                 </button>
               </div>
             </div>
 
+            <!-- LED Status Summary Line -->
+            <div class="text-[10px] text-[#6B6B6B] bg-[#FAFAFA] px-2 py-0.5 rounded border border-[#E8E8EC] flex items-center justify-between">
+              <span id="ledStatusSummary" class="truncate font-medium text-[#0A0A0A]">Đèn 1: TẮT | Đèn 2: TẮT | Đèn 3: TẮT</span>
+            </div>
           </div>
+
+          <!-- Section 2: Còi Báo Động Khẩn Cấp -->
+          <div class="pt-2 border-t border-[#E8E8EC]">
+            <div class="flex items-center justify-between mb-1.5">
+              <h3 class="font-display font-bold text-xs text-[#0A0A0A] flex items-center gap-1.5">
+                <i class="fa-solid fa-bell text-rose-500"></i>
+                Còi Báo Động
+              </h3>
+              <span id="buzzerStateLabel" class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gray-100 text-[#6B6B6B]">
+                IM LẶNG
+              </span>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <div id="buzzerCircle" class="w-9 h-9 rounded-full bg-[#FAFAFA] border border-[#E8E8EC] flex items-center justify-center shrink-0 transition-all duration-300">
+                <i id="buzzerIcon" class="fa-solid fa-volume-off text-sm text-gray-400"></i>
+              </div>
+              <button id="btnManualBuzzer" onclick="toggleManualBuzzer()" disabled
+                class="flex-1 py-1.5 rounded-md font-bold text-[11px] uppercase tracking-wider bg-[#F4F4F6] hover:bg-gray-200 text-[#0A0A0A] border border-[#E8E8EC] disabled:opacity-40 transition">
+                <i class="fa-solid fa-power-off mr-1"></i>Bật/Tắt Còi
+              </button>
+            </div>
+          </div>
+
         </div>
+
       </div>
 
-      <!-- BOTTOM ROW: REAL-TIME CANVAS CHART & FIREBASE CONSOLE LOG -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <!-- Canvas Real-time Chart (7 Cols) -->
-        <div class="lg:col-span-7 bg-white border border-[#E8E8EC] rounded-xl p-5 shadow-sm hover:shadow-card-hover transition-all duration-200">
-          <div class="flex items-center justify-between mb-3">
-            <div>
-              <h3 class="font-display font-bold text-sm text-[#0A0A0A] flex items-center gap-2">
-                <i class="fa-solid fa-chart-line text-brand"></i>
-                Đồ Thị Giám Sát Nồng Độ CO2 Thời Gian Thực
-              </h3>
-              <p class="text-xs text-[#6B6B6B]">Đồng bộ Firebase Realtime • Đường tham chiếu theo các mức đặt</p>
-            </div>
-            <button onclick="clearChartHistory()" class="text-xs text-[#6B6B6B] hover:text-[#0A0A0A] px-2.5 py-1 rounded bg-[#F4F4F6] border border-[#E8E8EC]">
+      <!-- ROW 2: CANVAS CHART (7 Cols) & SERIAL LOG MONITOR (5 Cols) -->
+      <div class="flex-[0.85] min-h-0 grid grid-cols-12 gap-2.5">
+        
+        <!-- CANVAS REAL-TIME GRAPH (COL-SPAN-7) -->
+        <div class="col-span-12 lg:col-span-7 bg-white border border-[#E8E8EC] rounded-xl p-2.5 shadow-sm flex flex-col justify-between min-h-0 overflow-hidden">
+          <div class="flex items-center justify-between pb-1.5 border-b border-[#E8E8EC] shrink-0">
+            <h3 class="font-display font-bold text-xs text-[#0A0A0A] flex items-center gap-1.5">
+              <i class="fa-solid fa-chart-line text-brand"></i>
+              Đồ Thị Giám Sát Nồng Độ CO2 Thời Gian Thực
+            </h3>
+            <button onclick="clearChartHistory()" class="text-[10px] font-semibold text-[#6B6B6B] hover:text-[#0A0A0A] px-2 py-0.5 rounded bg-[#F4F4F6] border border-[#E8E8EC]">
               Làm mới
             </button>
           </div>
-          <div class="w-full h-48 bg-[#FAFAFA] rounded-lg border border-[#E8E8EC] p-2 relative">
+          <div class="flex-1 min-h-0 w-full bg-[#FAFAFA] rounded-lg border border-[#E8E8EC] p-1 relative mt-1.5">
             <canvas id="adcChartCanvas" class="w-full h-full block"></canvas>
           </div>
         </div>
 
-        <!-- Terminal Log (5 Cols) - KHUNG CỐ ĐỊNH CHIỀU CAO CUỘN NỘI BỘ -->
-        <div class="lg:col-span-5 bg-white border border-[#E8E8EC] rounded-xl p-5 shadow-sm hover:shadow-card-hover transition-all duration-200 flex flex-col justify-between">
-          <div class="flex items-center justify-between mb-3 shrink-0">
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-              <h3 class="font-display font-bold text-sm text-[#0A0A0A]">Nhật Ký Dữ Liệu Firebase Cloud</h3>
+        <!-- SERIAL LOG TERMINAL (COL-SPAN-5) -->
+        <div class="col-span-12 lg:col-span-5 bg-white border border-[#E8E8EC] rounded-xl p-2.5 shadow-sm flex flex-col justify-between min-h-0 overflow-hidden">
+          <div class="flex items-center justify-between pb-1.5 border-b border-[#E8E8EC] shrink-0">
+            <div class="flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+              <h3 class="font-display font-bold text-xs text-[#0A0A0A]">Nhật Ký Dữ Liệu Firebase Cloud</h3>
             </div>
-            <button onclick="clearSerialMonitor()" class="text-xs text-[#6B6B6B] hover:text-[#0A0A0A] px-2 py-0.5 rounded bg-[#F4F4F6] border border-[#E8E8EC] transition">
+            <button onclick="clearSerialMonitor()" class="text-[10px] font-semibold text-[#6B6B6B] hover:text-[#0A0A0A] px-2 py-0.5 rounded bg-[#F4F4F6] border border-[#E8E8EC] transition">
               Xóa log
             </button>
           </div>
-          <div class="w-full h-48 max-h-48 shrink-0 relative overflow-hidden rounded-lg border border-gray-800 bg-[#0A0A0A]">
-            <div id="serialLogBox" style="height: 192px; max-height: 192px; overflow-y: scroll; overflow-x: hidden;" class="w-full h-full p-3 font-mono text-xs text-emerald-400 space-y-1">
-              <div class="text-slate-400">// Hệ thống giám sát CO2 hầm mỏ ERP V2.0 sẵn sàng...</div>
+          <div class="flex-1 min-h-0 w-full bg-[#0A0A0A] rounded-lg border border-gray-800 relative mt-1.5 overflow-hidden">
+            <div id="serialLogBox" class="w-full h-full p-2 font-mono text-[10px] text-emerald-400 space-y-0.5 overflow-y-auto">
+              <div class="text-slate-500">// Hệ thống giám sát CO2 hầm mỏ sẵn sàng...</div>
             </div>
           </div>
         </div>
+
       </div>
 
     </div>
 
-    <!-- ================= TAB 2: ARDUINO CODE V2 ================= -->
-    <div id="tabCode" class="hidden space-y-6">
-      <div class="bg-white border border-[#E8E8EC] rounded-xl p-6 shadow-sm">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-[#E8E8EC]">
-          <div>
-            <h2 class="font-display font-bold text-lg text-[#0A0A0A] flex items-center gap-2">
-              <i class="fa-solid fa-file-code text-brand"></i>
-              Mã Nguồn ESP32 V2.0 Đồng Bộ REST API & Datasheet MQ-135 (.ino)
-            </h2>
-            <p class="text-xs sm:text-sm text-[#6B6B6B] mt-1">
-              Đồng bộ 2 chiều toàn diện (Chế độ, Quạt, Còi, 3 LED, Mức đặt ngưỡng) với Firebase Realtime.
-            </p>
-          </div>
-          <button onclick="copyArduinoCode()" id="btnCopyCode" class="px-4 py-2 rounded-md bg-brand hover:bg-brand-hover text-white font-semibold text-xs uppercase tracking-wider transition flex items-center gap-2 shrink-0 shadow-button-glow">
-            <i class="fa-regular fa-copy"></i>
-            <span>Sao chép Code</span>
-          </button>
-        </div>
-
-        <div class="relative mt-4">
-          <pre id="arduinoCodeBlock" class="bg-[#0A0A0A] rounded-lg p-4 font-mono text-xs text-slate-200 overflow-x-auto max-h-[520px] leading-relaxed"><code>#include &lt;Arduino.h&gt;
-#include &lt;WiFi.h&gt;
-#include &lt;HTTPClient.h&gt;
-#include &lt;math.h&gt;
-
-// ====================================================================
-// HE THONG CANH BAO NONG DO CO2 TRONG HAM MO - PHIEN BAN V2 (DONG BO CLOUD)
-// Tich hop cam bien MQ-135 theo chuan Datasheet &amp; Firebase Realtime REST
-// ====================================================================
-
-// ==================================================
-// 0. CAU HINH WIFI VA FIREBASE
-// ==================================================
-const char* WIFI_SSID = "LoVuong";
-const char* WIFI_PASS = "phuancut";
-
-// URL Realtime Database
-const String FIREBASE_HOST = "https://automatic-138ef-default-rtdb.asia-southeast1.firebasedatabase.app";
-
-// ==================================================
-// 1. KHAI BAO CHAN PHAN CUNG ESP32
-// ==================================================
-const int MQ135_PIN = 34; // Chan Analog ADC đọc MQ-135
-
-// L298N - Quat 1 (Thong gio vung 1)
-const int IN1 = 25;
-const int IN2 = 26;
-const int ENA = 32;
-
-// L298N - Quat 2 (Thong gio vung 2)
-const int IN3 = 27;
-const int IN4 = 14;
-const int ENB = 33;
-
-// Cum 3 Den LED Canh bao
-const int LED1 = 21;
-const int LED2 = 18;
-const int LED3 = 23;
-
-// Coi bao dong (Buzzer Active High)
-const int BUZZER = 19;
-const bool BUZZER_ACTIVE_HIGH = true;
-
-// ==================================================
-// 2. CAU HINH PWM VA HE THONG
-// ==================================================
-const int PWM_FREQ = 1000;
-const int PWM_RES  = 10;
-const int PWM_MAX  = 1023;
-
-// Muc nguong mac dinh (User co the tuy chinh tu Web ERP qua Firebase)
-int th1 = 1000; // Ngưỡng mức 1 -&gt; mức 2
-int th2 = 2000; // Ngưỡng mức 2 -&gt; mức 3
-int th3 = 3000; // Ngưỡng mức 3 -&gt; mức 4 (Nguy hiem)
-
-// Toc do quat 4 cap do (Dong bo chuan voi Web ERP)
-int quatMuc1 = 20;  // 20%
-int quatMuc2 = 50;  // 50%
-int quatMuc3 = 70;  // 70%
-int quatMuc4 = 100; // 100%
-
-// ==================================================
-// 3. THONG SO CHUAN DATASHEET CAM BIEN MQ-135
-// ==================================================
-// RL: Dien tro tai tren mach module (thuong la 10k Ohm)
-const float RL_VALUE = 10.0; // kOhm
-// Dien tro cam bien trong khong khi sach chuan (ADC ~ 1000 =&gt; Rs ~ 31.0 kOhm)
-const float RS_CLEAN_AIR = 31.0; // kOhm
-
-// ==================================================
-// 4. BIEN TRANG THAI TOAN CUC
-// ==================================================
-bool isAutoMode = true;
-int currentAdc = 0;
-float currentVoltage = 0.0;
-float currentPpm = 400.0;
-int currentLevel = 1;
-int currentFanSpeed = 20;
-
-bool led1State = false;
-bool led2State = false;
-bool led3State = false;
-bool buzzerState = false;
-
-unsigned long lastSendTime = 0;
-const unsigned long sendInterval = 1000; // Dong bo Firebase moi 1 giay
-
-// ==================================================
-// 5. HAM DIEU KHIEN PHAN CUNG
-// ==================================================
-void writePWM(int pin, int channel, int duty) {
-#if defined(ESP_ARDUINO_VERSION) &amp;&amp; (ESP_ARDUINO_VERSION &gt;= ESP_ARDUINO_VERSION_VAL(3, 0, 0))
-  ledcWrite(pin, duty);
-#else
-  ledcWrite(channel, duty);
-#endif
-}
-
-void setFan(int percent) {
-  currentFanSpeed = constrain(percent, 0, 100);
-  int duty = map(currentFanSpeed, 0, 100, 0, PWM_MAX);
-
-  if (currentFanSpeed &lt;= 0) {
-    digitalWrite(IN1, LOW);
-    digitalWrite(IN2, LOW);
-    digitalWrite(IN3, LOW);
-    digitalWrite(IN4, LOW);
-    writePWM(ENA, 0, 0);
-    writePWM(ENB, 1, 0);
-  } else {
-    // Chieu quay thuan hut gio thong khi ham mo
-    digitalWrite(IN1, HIGH);
-    digitalWrite(IN2, LOW);
-    digitalWrite(IN3, HIGH);
-    digitalWrite(IN4, LOW);
-    writePWM(ENA, 0, duty);
-    writePWM(ENB, 1, duty);
-  }
-}
-
-void applyOutputs() {
-  digitalWrite(LED1, led1State ? HIGH : LOW);
-  digitalWrite(LED2, led2State ? HIGH : LOW);
-  digitalWrite(LED3, led3State ? HIGH : LOW);
-
-  bool outBuzzer = BUZZER_ACTIVE_HIGH ? buzzerState : !buzzerState;
-  digitalWrite(BUZZER, outBuzzer ? HIGH : LOW);
-}
-
-// Doc ADC va tinh toan trung binh loc nhieu
-int readMQ135() {
-  long sum = 0;
-  for (int i = 0; i &lt; 8; i++) {
-    sum += analogRead(MQ135_PIN);
-    delay(3);
-  }
-  return sum / 8;
-}
-
-// Tinh toan nong do CO2 (PPM) theo chuan Datasheet MQ-135
-float calculateCO2Ppm(int adc) {
-  if (adc &lt;= 50) return 400.0;
-  if (adc &gt;= 4090) adc = 4090;
-
-  // Dien ap A0 doc duoc tu ESP32 ADC (0 - 3.3V)
-  currentVoltage = (adc / 4095.0) * 3.3;
-
-  // Tinh dien tro cam bien Rs = RL * (4095 - ADC) / ADC
-  float rs = RL_VALUE * ((4095.0 - (float)adc) / (float)adc);
-  if (rs &lt;= 0.01) rs = 0.01;
-
-  // Ty so Rs / Rs_clean (so voi khong khi sach 400 ppm)
-  float ratio = rs / RS_CLEAN_AIR;
-  if (ratio &lt;= 0.01) ratio = 0.01;
-
-  // Cong thuc MQ-135 CO2 chuan: Baseline 400 ppm, do thi log-log doc -1.5
-  float ppm = 400.0 * pow(ratio, -1.5);
-
-  // Rang buoc gia tri thuc te trong ham mo
-  if (ppm &lt; 400.0) ppm = 400.0;
-  if (ppm &gt; 20000.0) ppm = 20000.0;
-
-  return ppm;
-}
-
-// ==================================================
-// 6. TRICH XUAT JSON AN TOAN (KHONG LOI THU VIEN NGOAI)
-// ==================================================
-String extractString(const String&amp; json, const String&amp; key) {
-  int idx = json.indexOf("\"" + key + "\"");
-  if (idx &lt; 0) return "";
-  int colon = json.indexOf(":", idx);
-  if (colon &lt; 0) return "";
-  int q1 = json.indexOf("\"", colon);
-  int q2 = json.indexOf("\"", q1 + 1);
-  if (q1 &gt;= 0 &amp;&amp; q2 &gt; q1) return json.substring(q1 + 1, q2);
-  return "";
-}
-
-int extractInt(const String&amp; json, const String&amp; key, int defaultVal) {
-  int idx = json.indexOf("\"" + key + "\"");
-  if (idx &lt; 0) return defaultVal;
-  int colon = json.indexOf(":", idx);
-  if (colon &lt; 0) return defaultVal;
-  int endComma = json.indexOf(",", colon);
-  int endBrace = json.indexOf("}", colon);
-  int endPos = -1;
-  if (endComma &gt; 0 &amp;&amp; endBrace &gt; 0) {
-    endPos = (endComma &lt; endBrace) ? endComma : endBrace;
-  } else if (endComma &gt; 0) {
-    endPos = endComma;
-  } else {
-    endPos = endBrace;
-  }
-  if (endPos &gt; colon) {
-    String val = json.substring(colon + 1, endPos);
-    val.trim();
-    val.replace("\"", "");
-    return val.toInt();
-  }
-  return defaultVal;
-}
-
-bool extractBool(const String&amp; json, const String&amp; key, bool defaultVal) {
-  int idx = json.indexOf("\"" + key + "\"");
-  if (idx &lt; 0) return defaultVal;
-  int colon = json.indexOf(":", idx);
-  if (colon &lt; 0) return defaultVal;
-  int endComma = json.indexOf(",", colon);
-  int endBrace = json.indexOf("}", colon);
-  int endPos = -1;
-  if (endComma &gt; 0 &amp;&amp; endBrace &gt; 0) {
-    endPos = (endComma &lt; endBrace) ? endComma : endBrace;
-  } else if (endComma &gt; 0) {
-    endPos = endComma;
-  } else {
-    endPos = endBrace;
-  }
-  if (endPos &gt; colon) {
-    String val = json.substring(colon + 1, endPos);
-    val.trim();
-    val.toLowerCase();
-    val.replace("\"", "");
-    if (val == "true" || val == "1") return true;
-    if (val == "false" || val == "0") return false;
-  }
-  return defaultVal;
-}
-
-// ==================================================
-// 7. DONG BO VOI FIREBASE REALTIME DATABASE (REST API)
-// ==================================================
-void syncFirebase() {
-  if (WiFi.status() != WL_CONNECTED) return;
-
-  HTTPClient http;
-
-  // 1. DOC LENH DIEU KHIEN VA NGUONG TU /device_control.json (CHI 1 REQUEST CHO TAT CA)
-  http.begin(FIREBASE_HOST + "/device_control.json");
-  int httpCode = http.GET();
-  if (httpCode == 200) {
-    String payload = http.getString();
-
-    // Mode AUTO / MANUAL
-    String m = extractString(payload, "mode");
-    if (m.length() &gt; 0) {
-      isAutoMode = !(m.equalsIgnoreCase("MANUAL"));
-    }
-
-    // Doc cac nguong cai dat tu nguoi dung (neu co)
-    th1 = extractInt(payload, "th1", th1);
-    th2 = extractInt(payload, "th2", th2);
-    th3 = extractInt(payload, "th3", th3);
-
-    // Neu o che do MANUAL: Doc day du Quat, Coi va CUM 3 LED
-    if (!isAutoMode) {
-      if (payload.indexOf("\"fan\"") &gt;= 0) {
-        currentFanSpeed = extractInt(payload, "fan", currentFanSpeed);
-        setFan(currentFanSpeed);
-      }
-      if (payload.indexOf("\"buzzer\"") &gt;= 0) {
-        buzzerState = extractBool(payload, "buzzer", buzzerState);
-      }
-      if (payload.indexOf("\"led1\"") &gt;= 0) {
-        led1State = extractBool(payload, "led1", led1State);
-      }
-      if (payload.indexOf("\"led2\"") &gt;= 0) {
-        led2State = extractBool(payload, "led2", led2State);
-      }
-      if (payload.indexOf("\"led3\"") &gt;= 0) {
-        led3State = extractBool(payload, "led3", led3State);
-      }
-      applyOutputs();
-    }
-  }
-  http.end();
-
-  // 2. XU LY DIEU KHIEN TU DONG (KHI O CHE DO AUTO) DUA TREN CAC NGUONG DONG
-  if (isAutoMode) {
-    if (currentAdc &lt; th1) {
-      currentLevel = 1; // Khong khi an toan
-      setFan(quatMuc1);
-      led1State = led2State = led3State = false;
-      buzzerState = false;
-    } else if (currentAdc &lt; th2) {
-      currentLevel = 2; // Canh bao nhe
-      setFan(quatMuc2);
-      led1State = true;
-      led2State = led3State = false;
-      buzzerState = false;
-    } else if (currentAdc &lt; th3) {
-      currentLevel = 3; // O nhiem / Nguy co cao
-      setFan(quatMuc3);
-      led1State = led2State = true;
-      led3State = false;
-      buzzerState = false;
-    } else {
-      currentLevel = 4; // Nguy hiem cuc do
-      setFan(quatMuc4);
-      led1State = led2State = led3State = true;
-      buzzerState = true;
-    }
-    applyOutputs();
-  }
-
-  // 3. CAP NHAT TRANG THAI DAY DU LEN /device_status.json
-  String jsonData = "{";
-  jsonData += "\"mode\":\"" + String(isAutoMode ? "AUTO" : "MANUAL") + "\",";
-  jsonData += "\"adc\":" + String(currentAdc) + ",";
-  jsonData += "\"voltage\":" + String(currentVoltage, 2) + ",";
-  jsonData += "\"co2_ppm\":" + String((int)currentPpm) + ",";
-  jsonData += "\"level\":" + String(currentLevel) + ",";
-  jsonData += "\"fan\":" + String(currentFanSpeed) + ",";
-  jsonData += "\"led1\":" + String(led1State ? "true" : "false") + ",";
-  jsonData += "\"led2\":" + String(led2State ? "true" : "false") + ",";
-  jsonData += "\"led3\":" + String(led3State ? "true" : "false") + ",";
-  jsonData += "\"buzzer\":" + String(buzzerState ? "true" : "false") + ",";
-  jsonData += "\"th1\":" + String(th1) + ",";
-  jsonData += "\"th2\":" + String(th2) + ",";
-  jsonData += "\"th3\":" + String(th3);
-  jsonData += "}";
-
-  http.begin(FIREBASE_HOST + "/device_status.json");
-  http.addHeader("Content-Type", "application/json");
-  int patchCode = http.sendRequest("PATCH", jsonData);
-
-  Serial.printf("[Cloud Sync] HTTP: %d | ADC: %d | CO2: %d PPM (~%.2fV) | Mức: %d | Quạt: %d%% | Mode: %s | LED: [%d,%d,%d] | Còi: %d\n",
-    patchCode, currentAdc, (int)currentPpm, currentVoltage, currentLevel, currentFanSpeed,
-    isAutoMode ? "AUTO" : "MANUAL", led1State, led2State, led3State, buzzerState);
-
-  http.end();
-}
-
-// ==================================================
-// SETUP
-// ==================================================
-void setup() {
-  Serial.begin(115200);
-
-  pinMode(MQ135_PIN, INPUT);
-  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
-  pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
-  pinMode(LED1, OUTPUT); pinMode(LED2, OUTPUT); pinMode(LED3, OUTPUT);
-  pinMode(BUZZER, OUTPUT);
-
-  analogReadResolution(12);
-
-#if defined(ESP_ARDUINO_VERSION) &amp;&amp; (ESP_ARDUINO_VERSION &gt;= ESP_ARDUINO_VERSION_VAL(3, 0, 0))
-  ledcAttach(ENA, PWM_FREQ, PWM_RES);
-  ledcAttach(ENB, PWM_FREQ, PWM_RES);
-#else
-  ledcSetup(0, PWM_FREQ, PWM_RES);
-  ledcAttachPin(ENA, 0);
-  ledcSetup(1, PWM_FREQ, PWM_RES);
-  ledcAttachPin(ENB, 1);
-#endif
-
-  // Khoi tao quat va LED
-  setFan(quatMuc1);
-  applyOutputs();
-
-  // Ket noi WiFi
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(WIFI_SSID, WIFI_PASS);
-  Serial.print("Dang ket noi WiFi vao mang: ");
-  Serial.println(WIFI_SSID);
-
-  int retry = 0;
-  while (WiFi.status() != WL_CONNECTED &amp;&amp; retry &lt; 25) {
-    delay(500);
-    Serial.print(".");
-    retry++;
-  }
-
-  if (WiFi.status() == WL_CONNECTED) {
-    Serial.println("\n&gt;&gt; WiFi da ket noi thanh cong!");
-    Serial.print("&gt;&gt; Dia chi IP ESP32: ");
-    Serial.println(WiFi.localIP());
-  } else {
-    Serial.println("\n[Canh bao] Chua ket noi duoc WiFi. Tiep tuc chay Offline...");
-  }
-}
-
-// ==================================================
-// MAIN LOOP
-// ==================================================
-void loop() {
-  // Doc cam bien va tinh toan nong do CO2 Datasheet
-  currentAdc = readMQ135();
-  currentPpm = calculateCO2Ppm(currentAdc);
-
-  // Dong bo Firebase moi 1 giay
-  if (millis() - lastSendTime &gt;= sendInterval) {
-    lastSendTime = millis();
-    syncFirebase();
-  }
-
-  delay(50);
-}</code></pre>
-        </div>
-      </div>
-    </div>
-
-    <!-- ================= TAB 3: WIRING PINOUT ================= -->
-    <div id="tabWiring" class="hidden space-y-6">
-      <div class="bg-white border border-[#E8E8EC] rounded-xl p-6 shadow-sm">
-        <h2 class="font-display font-bold text-lg text-[#0A0A0A] flex items-center gap-2 mb-4">
+    <!-- ================= TAB 2: WIRING PINOUT ================= -->
+    <div id="tabWiring" class="hidden flex-1 min-h-0 overflow-y-auto p-4 bg-white border border-[#E8E8EC] rounded-xl shadow-sm">
+      <div class="flex items-center justify-between pb-3 border-b border-[#E8E8EC] mb-3">
+        <h2 class="font-display font-bold text-sm text-[#0A0A0A] flex items-center gap-2">
           <i class="fa-solid fa-plug-circle-bolt text-brand"></i>
           Bảng Tra Cứu Sơ Đồ Đấu Nối Kỹ Thuật (ESP32 Pinout)
         </h2>
+        <button onclick="switchTab('dashboard')" class="px-3 py-1 rounded bg-brand text-white text-xs font-semibold">
+          <i class="fa-solid fa-arrow-left mr-1"></i>Trở lại Bảng điều khiển
+        </button>
+      </div>
 
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-xs sm:text-sm">
-            <thead>
-              <tr class="border-b border-[#E8E8EC] text-[#6B6B6B] bg-[#FAFAFA]">
-                <th class="py-3 px-4 font-semibold">Module Thiết bị</th>
-                <th class="py-3 px-4 font-semibold">Chân Module</th>
-                <th class="py-3 px-4 font-semibold">Chân ESP32</th>
-                <th class="py-3 px-4 font-semibold">Chức năng & Ghi chú</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-[#E8E8EC]">
-              <tr class="hover:bg-gray-50/80 transition">
-                <td class="py-3 px-4 font-bold text-emerald-600">Cảm biến MQ-135</td>
-                <td class="py-3 px-4 font-mono">A0 (Analog Out)</td>
-                <td class="py-3 px-4 font-mono font-bold text-[#0A0A0A]">GPIO 34</td>
-                <td class="py-3 px-4 text-[#6B6B6B]">Đọc ADC 12-bit (0 - 4095). VCC nối 5V (VIN), GND nối GND.</td>
-              </tr>
-              <tr class="hover:bg-gray-50/80 transition">
-                <td class="py-3 px-4 font-bold text-brand">Quạt 1 (Khu vực 1)</td>
-                <td class="py-3 px-4 font-mono">ENA, IN1, IN2</td>
-                <td class="py-3 px-4 font-mono font-bold text-[#0A0A0A]">GPIO 32, 25, 26</td>
-                <td class="py-3 px-4 text-[#6B6B6B]">PWM ENA (GPIO 32). IN1=HIGH, IN2=LOW (Quay thuận hút khí).</td>
-              </tr>
-              <tr class="hover:bg-gray-50/80 transition">
-                <td class="py-3 px-4 font-bold text-brand">Quạt 2 (Khu vực 2)</td>
-                <td class="py-3 px-4 font-mono">ENB, IN3, IN4</td>
-                <td class="py-3 px-4 font-mono font-bold text-[#0A0A0A]">GPIO 33, 27, 14</td>
-                <td class="py-3 px-4 text-[#6B6B6B]">PWM ENB (GPIO 33). IN3=HIGH, IN4=LOW (Quay thuận hút khí).</td>
-              </tr>
-              <tr class="hover:bg-gray-50/80 transition">
-                <td class="py-3 px-4 font-bold text-amber-600">Cụm 3 Đèn LED</td>
-                <td class="py-3 px-4 font-mono">Anode (+) Đèn 1, 2, 3</td>
-                <td class="py-3 px-4 font-mono font-bold text-[#0A0A0A]">GPIO 21, 18, 23</td>
-                <td class="py-3 px-4 text-[#6B6B6B]">Mắc nối tiếp điện trở 220Ω cho mỗi LED. Cathode (-) nối GND.</td>
-              </tr>
-              <tr class="hover:bg-gray-50/80 transition">
-                <td class="py-3 px-4 font-bold text-rose-600">Còi Báo Động (Buzzer)</td>
-                <td class="py-3 px-4 font-mono">Chân I/O (+)</td>
-                <td class="py-3 px-4 font-mono font-bold text-[#0A0A0A]">GPIO 19</td>
-                <td class="py-3 px-4 text-[#6B6B6B]">Active HIGH: GPIO 19 xuất HIGH còi kêu báo động khẩn cấp.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="border-b border-[#E8E8EC] text-[#6B6B6B] bg-[#FAFAFA]">
+              <th class="py-2.5 px-3 font-semibold">Module Thiết bị</th>
+              <th class="py-2.5 px-3 font-semibold">Chân Module</th>
+              <th class="py-2.5 px-3 font-semibold">Chân ESP32</th>
+              <th class="py-2.5 px-3 font-semibold">Chức năng & Ghi chú</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#E8E8EC]">
+            <tr class="hover:bg-gray-50/80 transition">
+              <td class="py-2 px-3 font-bold text-emerald-600">Cảm biến MQ-135</td>
+              <td class="py-2 px-3 font-mono">A0 (Analog Out)</td>
+              <td class="py-2 px-3 font-mono font-bold text-[#0A0A0A]">GPIO 34</td>
+              <td class="py-2 px-3 text-[#6B6B6B]">Đọc ADC 12-bit (0 - 4095). VCC nối 5V (VIN), GND nối GND.</td>
+            </tr>
+            <tr class="hover:bg-gray-50/80 transition">
+              <td class="py-2 px-3 font-bold text-brand">Quạt 1 (Khu vực 1)</td>
+              <td class="py-2 px-3 font-mono">ENA, IN1, IN2</td>
+              <td class="py-2 px-3 font-mono font-bold text-[#0A0A0A]">GPIO 32, 25, 26</td>
+              <td class="py-2 px-3 text-[#6B6B6B]">PWM ENA (GPIO 32). IN1=HIGH, IN2=LOW (Quay thuận hút khí).</td>
+            </tr>
+            <tr class="hover:bg-gray-50/80 transition">
+              <td class="py-2 px-3 font-bold text-brand">Quạt 2 (Khu vực 2)</td>
+              <td class="py-2 px-3 font-mono">ENB, IN3, IN4</td>
+              <td class="py-2 px-3 font-mono font-bold text-[#0A0A0A]">GPIO 33, 27, 14</td>
+              <td class="py-2 px-3 text-[#6B6B6B]">PWM ENB (GPIO 33). IN3=HIGH, IN4=LOW (Quay thuận hút khí).</td>
+            </tr>
+            <tr class="hover:bg-gray-50/80 transition">
+              <td class="py-2 px-3 font-bold text-amber-600">Cụm 3 Đèn LED</td>
+              <td class="py-2 px-3 font-mono">Anode (+) Đèn 1, 2, 3</td>
+              <td class="py-2 px-3 font-mono font-bold text-[#0A0A0A]">GPIO 21, 18, 23</td>
+              <td class="py-2 px-3 text-[#6B6B6B]">Mắc nối tiếp điện trở 220Ω cho mỗi LED. Cathode (-) nối GND.</td>
+            </tr>
+            <tr class="hover:bg-gray-50/80 transition">
+              <td class="py-2 px-3 font-bold text-rose-600">Còi Báo Động (Buzzer)</td>
+              <td class="py-2 px-3 font-mono">Chân I/O (+)</td>
+              <td class="py-2 px-3 font-mono font-bold text-[#0A0A0A]">GPIO 19</td>
+              <td class="py-2 px-3 text-[#6B6B6B]">Active HIGH: GPIO 19 xuất HIGH còi kêu báo động khẩn cấp.</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
   </main>
 
   <!-- Toast Notification Popover -->
-  <div id="toastMsg" class="fixed bottom-6 right-6 z-50 hidden bg-[#0A0A0A] text-white px-4 py-3 rounded-md shadow-xl flex items-center gap-3 text-xs font-medium border border-gray-800 transition-all duration-300">
-    <i class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+  <div id="toastMsg" class="fixed bottom-4 right-4 z-50 hidden bg-[#0A0A0A] text-white px-3.5 py-2.5 rounded-md shadow-xl flex items-center gap-2.5 text-xs font-medium border border-gray-800 transition-all duration-300">
+    <i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
     <span id="toastText">Đã cập nhật!</span>
   </div>
 
-  <!-- ================= FIREBASE & APP LOGIC V2 ================= -->
+  <!-- ================= FIREBASE & APP LOGIC V4 ================= -->
   <script>
     // --- 1. FIREBASE CONFIGURATION ---
     const firebaseConfig = {
@@ -1060,7 +562,7 @@ void loop() {
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Ngưỡng hệ thống (Có thể chỉnh sửa linh hoạt)
+    // Ngưỡng hệ thống
     let thresholds = {
       th1: 1000,
       th2: 2000,
@@ -1079,32 +581,36 @@ void loop() {
       led1: false,
       led2: false,
       led3: false,
-      buzzer: false,
-      webAudioEnabled: false
+      buzzer: false
     };
 
-    const MAX_CHART_POINTS = 40;
-    let adcHistory = [];
+    // Quản lý kết nối phần cứng ESP32
+    let isEsp32Connected = false;
+    let lastEsp32Update = 0;
+    const ESP32_TIMEOUT_MS = 3500;
 
-    // Web Audio Synth
-    let audioCtx = null;
-    let beepOscillator = null;
+    const MAX_CHART_POINTS = 35;
+    let adcHistory = [];
 
     // --- TAB SWITCHER ---
     function switchTab(tabName) {
-      const tabs = ['dashboard', 'code', 'wiring'];
+      const tabs = ['dashboard', 'wiring'];
       tabs.forEach(t => {
         const contentEl = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
         const btnEl = document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
-        if (t === tabName) {
-          contentEl.classList.remove('hidden');
-          btnEl.className = 'px-3 py-1.5 rounded-[4px] text-xs font-medium transition-all bg-white text-[#0A0A0A] shadow-sm';
-        } else {
-          contentEl.classList.add('hidden');
-          btnEl.className = 'px-3 py-1.5 rounded-[4px] text-xs font-medium transition-all text-[#6B6B6B] hover:text-[#0A0A0A]';
+        if (contentEl && btnEl) {
+          if (t === tabName) {
+            contentEl.classList.remove('hidden');
+            btnEl.className = 'px-2.5 py-1 rounded-[4px] text-xs font-semibold transition-all bg-white text-[#0A0A0A] shadow-sm flex items-center gap-1';
+          } else {
+            contentEl.classList.add('hidden');
+            btnEl.className = 'px-2.5 py-1 rounded-[4px] text-xs font-semibold transition-all text-[#6B6B6B] hover:text-[#0A0A0A] flex items-center gap-1';
+          }
         }
       });
-      if (tabName === 'dashboard') drawChart();
+      if (tabName === 'dashboard') {
+        setTimeout(drawChart, 60);
+      }
     }
 
     function showToast(message) {
@@ -1117,16 +623,13 @@ void loop() {
     // --- CẤU HÌNH NGƯỠNG (THRESHOLDS) ---
     function toggleThresholdPanel() {
       const panel = document.getElementById('thresholdConfigPanel');
-      const btnTxt = document.getElementById('txtBtnThreshold');
       if (panel.classList.contains('hidden')) {
         panel.classList.remove('hidden');
-        btnTxt.textContent = 'Đóng cấu hình';
         document.getElementById('inputTh1').value = thresholds.th1;
         document.getElementById('inputTh2').value = thresholds.th2;
         document.getElementById('inputTh3').value = thresholds.th3;
       } else {
         panel.classList.add('hidden');
-        btnTxt.textContent = 'Chỉnh sửa mức đặt';
       }
     }
 
@@ -1144,7 +647,6 @@ void loop() {
       thresholds.th2 = v2;
       thresholds.th3 = v3;
 
-      // Đồng bộ lên Firebase
       db.ref('/device_control').update({
         th1: thresholds.th1,
         th2: thresholds.th2,
@@ -1174,19 +676,67 @@ void loop() {
       document.getElementById('gaugeMark3').textContent = thresholds.th3;
     }
 
-    // --- ĐIỀU KHIỂN AUTO / MANUAL ---
-    function setSystemMode(newMode) {
-      state.mode = newMode;
+    // --- TRẠNG THÁI KẾT NỐI ESP32 ---
+    function setEsp32ConnectionStatus(online) {
+      if (isEsp32Connected === online) return;
+      isEsp32Connected = online;
+
+      const badge = document.getElementById('esp32ConnBadge');
+      if (badge) {
+        if (online) {
+          badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>ESP32: Đã kết nối';
+          badge.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0';
+        } else {
+          badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span>ESP32: Mất kết nối';
+          badge.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-rose-50 text-rose-700 border border-rose-200 shrink-0';
+          showToast('Cảnh báo: Mất kết nối phần cứng ESP32!');
+        }
+      }
       updateUI();
-      db.ref('/device_control/mode').set(newMode);
-      showToast(`Đã chuyển sang chế độ ${newMode} (Gửi Firebase)`);
     }
 
-    // Điều khiển Quạt (Manual) - Tự động chuyển MANUAL nếu đang ở AUTO
-    function pushManualFanSpeed(val) {
-      if (state.mode !== 'MANUAL') {
+    setInterval(() => {
+      const now = Date.now();
+      if (lastEsp32Update > 0 && (now - lastEsp32Update > ESP32_TIMEOUT_MS)) {
+        setEsp32ConnectionStatus(false);
+      }
+    }, 1000);
+
+    // --- ĐIỀU KHIỂN AUTO / MANUAL (GIỮ NGUYÊN MỨC QUẠT, ĐÈN, CÒI KHI TỪ AUTO SANG MANUAL) ---
+    function setSystemMode(newMode) {
+      if (state.mode === newMode) return;
+
+      if (newMode === 'MANUAL' && (state.mode === 'AUTO' || state.mode === 'auto')) {
+        // Chuyển từ AUTO sang MANUAL: Giữ nguyên vẹn 100% các mức Quạt, 3 Đèn, Còi đang chạy từ AUTO
         state.mode = 'MANUAL';
-        db.ref('/device_control/mode').set('MANUAL');
+        updateUI();
+
+        // Ghi đè ngay lập tức trạng thái hiện tại lên /device_control để bảo toàn mức hoạt động
+        db.ref('/device_control').update({
+          mode: 'MANUAL',
+          fan: state.fanSpeed,
+          led1: state.led1,
+          led2: state.led2,
+          led3: state.led3,
+          buzzer: state.buzzer
+        });
+        showToast('Đã chuyển sang MANUAL (Giữ nguyên mức Quạt, Đèn, Còi)');
+      } else {
+        state.mode = newMode;
+        updateUI();
+        db.ref('/device_control/mode').set(newMode);
+        showToast(`Đã chuyển sang chế độ ${newMode}`);
+      }
+    }
+
+    function pushManualFanSpeed(val) {
+      if (!isEsp32Connected) {
+        showToast('ESP32 chưa kết nối! Quạt chỉ có thể bật khi kết nối với ESP32.');
+        return;
+      }
+      if (state.mode === 'AUTO' || state.mode === 'auto') {
+        showToast('Hệ thống đang ở chế độ AUTO. Vui lòng bấm nút MANUAL phía trên để điều khiển quạt!');
+        return;
       }
       const speed = parseInt(val, 10);
       state.fanSpeed = speed;
@@ -1195,25 +745,30 @@ void loop() {
       showToast(speed > 0 ? `Đã chỉnh tốc độ quạt: ${speed}%` : 'Đã TẮT Quạt thông gió');
     }
 
-    // Điều khiển Đèn LED (Manual) - Cập nhật giao diện TỨC THÌ & Gửi Firebase
     function toggleSingleLed(index) {
-      if (state.mode !== 'MANUAL') {
-        state.mode = 'MANUAL';
-        db.ref('/device_control/mode').set('MANUAL');
+      if (!isEsp32Connected) {
+        showToast('ESP32 chưa kết nối! Đèn chỉ có thể bật khi kết nối với ESP32.');
+        return;
+      }
+      if (state.mode === 'AUTO' || state.mode === 'auto') {
+        showToast('Hệ thống đang ở chế độ AUTO. Vui lòng bấm nút MANUAL phía trên để điều khiển đèn!');
+        return;
       }
       const targetKey = 'led' + index;
       state[targetKey] = !state[targetKey];
-      updateUI(); // Cập nhật màu sắc, bóng sáng tức thì
-
-      // Đồng bộ ngay lập tức lên Firebase
+      updateUI();
       db.ref('/device_control/' + targetKey).set(state[targetKey]);
       showToast(`Đã ${state[targetKey] ? 'BẬT' : 'TẮT'} Đèn cảnh báo ${index}`);
     }
 
     function toggleAllManualLeds() {
-      if (state.mode !== 'MANUAL') {
-        state.mode = 'MANUAL';
-        db.ref('/device_control/mode').set('MANUAL');
+      if (!isEsp32Connected) {
+        showToast('ESP32 chưa kết nối! Đèn chỉ có thể bật khi kết nối với ESP32.');
+        return;
+      }
+      if (state.mode === 'AUTO' || state.mode === 'auto') {
+        showToast('Hệ thống đang ở chế độ AUTO. Vui lòng bấm nút MANUAL phía trên để điều khiển đèn!');
+        return;
       }
       const anyOn = state.led1 || state.led2 || state.led3;
       const targetVal = !anyOn;
@@ -1230,11 +785,14 @@ void loop() {
       showToast(targetVal ? 'Đã BẬT cả 3 đèn cảnh báo' : 'Đã TẮT cả 3 đèn cảnh báo');
     }
 
-    // Điều khiển Còi (Manual) - Tự động chuyển MANUAL nếu cần
     function toggleManualBuzzer() {
-      if (state.mode !== 'MANUAL') {
-        state.mode = 'MANUAL';
-        db.ref('/device_control/mode').set('MANUAL');
+      if (!isEsp32Connected) {
+        showToast('ESP32 chưa kết nối! Còi chỉ có thể bật khi kết nối với ESP32.');
+        return;
+      }
+      if (state.mode === 'AUTO' || state.mode === 'auto') {
+        showToast('Hệ thống đang ở chế độ AUTO. Vui lòng bấm nút MANUAL phía trên để điều khiển còi!');
+        return;
       }
       state.buzzer = !state.buzzer;
       updateUI();
@@ -1242,36 +800,42 @@ void loop() {
       showToast(state.buzzer ? 'Đã BẬT Còi báo động' : 'Đã TẮT Còi báo động');
     }
 
-    // --- TÍNH TOÁN CO2 CHUẨN DATASHEET MQ-135 ---
+    // --- TÍNH TOÁN CO2 & MỨC (LEVEL) CHUẨN DATASHEET MQ-135 ---
     function calculateCO2FromADC(adc) {
-      if (adc <= 50) return 400;
+      if (adc <= 50) return 350;
       if (adc >= 4090) adc = 4090;
 
-      const RL = 10.0; // Điện trở tải 10 kOhm
-      const RS_CLEAN_AIR = 31.0; // Điện trở cảm biến tại không khí sạch chuẩn (ADC ~ 1000)
+      const RL = 10.0;
+      const RS_CLEAN_AIR = 70.0; // Tối ưu khớp ADC phòng ~500 để cảm biến nhạy và không bị kẹt 400 PPM
 
       const rs = RL * ((4095.0 - adc) / adc);
       const ratio = Math.max(0.01, rs / RS_CLEAN_AIR);
-      // Đường đặc tính CO2 Log-Log chuẩn độ dốc -1.5
       let ppm = Math.round(400.0 * Math.pow(ratio, -1.5));
-      if (ppm < 400) ppm = 400;
+      if (ppm < 350) ppm = 350;
       if (ppm > 20000) ppm = 20000;
       return ppm;
     }
 
-    // --- LẮNG NGHE DỮ LIỆU REALTIME FIREBASE ---
+    // Tính toán Mức (1, 2, 3, 4) chính xác theo nồng độ CO2 PPM và các ngưỡng đặt
+    function calculateLevel(ppm, th) {
+      if (ppm < th.th1) return 1;
+      if (ppm < th.th2) return 2;
+      if (ppm < th.th3) return 3;
+      return 4;
+    }
+
+    // --- LẮNG NGHE FIREBASE REALTIME ---
     db.ref('.info/connected').on('value', (snap) => {
       const connBadge = document.getElementById('connBadge');
       if (snap.val() === true) {
-        connBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Đã kết nối Firebase Cloud';
-        connBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200';
+        connBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Cloud Online';
+        connBadge.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0';
       } else {
-        connBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span>Mất kết nối Cloud';
-        connBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-rose-50 text-rose-700 border border-rose-200';
+        connBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span>Mất kết nối';
+        connBadge.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-rose-50 text-rose-700 border border-rose-200 shrink-0';
       }
     });
 
-    // Lắng nghe lệnh điều khiển và ngưỡng từ Firebase
     db.ref('/device_control').on('value', (snapshot) => {
       const ctrl = snapshot.val();
       if (!ctrl) return;
@@ -1280,7 +844,6 @@ void loop() {
       if (ctrl.th2) thresholds.th2 = ctrl.th2;
       if (ctrl.th3) thresholds.th3 = ctrl.th3;
 
-      // Trong chế độ MANUAL, thiết bị luôn ưu tiên trạng thái từ device_control
       if (state.mode === 'MANUAL' || state.mode === 'manual') {
         if (ctrl.fan !== undefined) state.fanSpeed = ctrl.fan;
         if (ctrl.led1 !== undefined) state.led1 = !!ctrl.led1;
@@ -1293,36 +856,40 @@ void loop() {
       updateUI();
     });
 
-    // Lắng nghe trạng thái cảm biến và thiết bị từ ESP32
     db.ref('/device_status').on('value', (snapshot) => {
       const data = snapshot.val();
       if (!data) return;
 
-      // Dữ liệu cảm biến luôn lấy từ thiết bị gửi lên
+      lastEsp32Update = Date.now();
+      setEsp32ConnectionStatus(true);
+
       state.currentAdc = data.adc !== undefined ? data.adc : (data.air_quality || 0);
       state.voltage = data.voltage !== undefined ? data.voltage : ((state.currentAdc / 4095) * 3.3).toFixed(2);
       state.co2Ppm = data.co2_ppm !== undefined ? data.co2_ppm : calculateCO2FromADC(state.currentAdc);
-      state.level = data.level || 1;
 
-      // CHỈ đồng bộ trạng thái Quạt, Đèn, Còi từ device_status khi đang ở chế độ AUTO
-      // Ở chế độ MANUAL, giao diện không bị ghi đè bởi bản tin status cũ của thiết bị
-      if (state.mode === 'AUTO' || state.mode === 'auto') {
-        state.fanSpeed = data.fan !== undefined ? data.fan : (data.fan_speed || 0);
-        state.led1 = !!data.led1;
-        state.led2 = !!data.led2;
-        state.led3 = !!data.led3;
-        state.buzzer = !!data.buzzer;
-      }
-
+      // Cập nhật ngưỡng trước nếu có từ thiết bị
       if (data.th1) thresholds.th1 = data.th1;
       if (data.th2) thresholds.th2 = data.th2;
       if (data.th3) thresholds.th3 = data.th3;
 
+      // Tính Mức Cảnh Báo chính xác theo PPM hiển thị và ngưỡng hiện tại
+      state.level = calculateLevel(state.co2Ppm, thresholds);
+
+      if (state.mode === 'AUTO' || state.mode === 'auto') {
+        state.fanSpeed = data.fan !== undefined ? data.fan : (data.fan_speed || (state.level === 1 ? 20 : (state.level === 2 ? 50 : (state.level === 3 ? 70 : 100))));
+        // Quy tắc đèn cộng dồn: Mức sau thì đèn ở mức trước vẫn được bật; Còi kêu khi lên Mức 4
+        state.led1 = (state.level >= 2);
+        state.led2 = (state.level >= 3);
+        state.led3 = (state.level >= 4);
+        state.buzzer = (state.level >= 4);
+      }
+
+
+
       const now = new Date();
       document.getElementById('lastSyncTime').textContent = now.toLocaleTimeString();
 
-      // Cập nhật biểu đồ & UI
-      adcHistory.push(state.currentAdc);
+      adcHistory.push(state.co2Ppm);
       if (adcHistory.length > MAX_CHART_POINTS) adcHistory.shift();
 
       updateUI();
@@ -1332,14 +899,9 @@ void loop() {
 
     // --- CẬP NHẬT GIAO DIỆN (UI) ---
     function updateUI() {
-      // 1. Cập nhật nút Mode
       const isAuto = (state.mode === 'AUTO' || state.mode === 'auto');
       const btnAuto = document.getElementById('btnModeAuto');
       const btnManual = document.getElementById('btnModeManual');
-      const badge = document.getElementById('modeTitleBadge');
-      const desc = document.getElementById('modeDesc');
-      const iconBox = document.getElementById('modeIconBox');
-      const icon = document.getElementById('modeIcon');
       const fanLockBadge = document.getElementById('fanLockBadge');
       const manualFanControls = document.getElementById('manualFanControls');
 
@@ -1351,151 +913,177 @@ void loop() {
         document.getElementById('btnManualBuzzer')
       ];
 
+      // 1. Cập nhật Mode button
       if (isAuto) {
-        btnAuto.className = 'px-3.5 py-1.5 rounded-[4px] text-xs font-semibold uppercase tracking-wider transition-all bg-brand text-white shadow-button-glow';
-        btnManual.className = 'px-3.5 py-1.5 rounded-[4px] text-xs font-semibold uppercase tracking-wider transition-all text-[#6B6B6B] hover:text-[#0A0A0A]';
-        badge.textContent = 'AUTO - TỰ ĐỘNG';
-        badge.className = 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-brand-light text-brand border border-brand/20';
-        desc.textContent = 'Hệ thống tự động điều khiển 2 quạt thông gió, 3 đèn và còi theo 4 mức ngưỡng nồng độ CO2. (Bấm đèn hoặc quạt sẽ tự chuyển sang Manual)';
-        iconBox.className = 'w-10 h-10 rounded-lg bg-brand-light text-brand flex items-center justify-center shrink-0 mt-0.5 border border-brand/10';
-        icon.className = 'fa-solid fa-wand-magic-sparkles text-base';
+        btnAuto.className = 'px-2.5 py-1 rounded-[4px] text-[11px] font-bold uppercase tracking-wider transition-all bg-brand text-white shadow-sm flex items-center gap-1';
+        btnManual.className = 'px-2.5 py-1 rounded-[4px] text-[11px] font-bold uppercase tracking-wider transition-all text-[#6B6B6B] hover:text-[#0A0A0A] flex items-center gap-1';
 
         fanLockBadge.innerHTML = '<i class="fa-solid fa-lock mr-1"></i>Đang chạy AUTO';
-        fanLockBadge.className = 'text-xs font-medium px-2.5 py-1 rounded-md bg-[#F4F4F6] text-[#6B6B6B] border border-[#E8E8EC]';
-        manualFanControls.classList.remove('opacity-50', 'pointer-events-none');
-        manualBtns.forEach(b => b.disabled = false);
+        fanLockBadge.className = 'text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#F4F4F6] text-[#6B6B6B] border border-[#E8E8EC]';
+        manualFanControls.classList.add('opacity-40', 'pointer-events-none');
+        manualBtns.forEach(b => { if (b) b.disabled = true; });
       } else {
-        btnManual.className = 'px-3.5 py-1.5 rounded-[4px] text-xs font-semibold uppercase tracking-wider transition-all bg-[#0A0A0A] text-white shadow-sm';
-        btnAuto.className = 'px-3.5 py-1.5 rounded-[4px] text-xs font-semibold uppercase tracking-wider transition-all text-[#6B6B6B] hover:text-[#0A0A0A]';
-        badge.textContent = 'MANUAL - CHỈNH TAY';
-        badge.className = 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200';
-        desc.textContent = 'Toàn quyền bật/tắt quạt, điều chỉnh tốc độ, công tắc từng đèn LED và còi báo động thủ công từ Web ERP.';
-        iconBox.className = 'w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 mt-0.5 border border-amber-200';
-        icon.className = 'fa-solid fa-sliders text-base';
+        btnManual.className = 'px-2.5 py-1 rounded-[4px] text-[11px] font-bold uppercase tracking-wider transition-all bg-[#0A0A0A] text-white shadow-sm flex items-center gap-1';
+        btnAuto.className = 'px-2.5 py-1 rounded-[4px] text-[11px] font-bold uppercase tracking-wider transition-all text-[#6B6B6B] hover:text-[#0A0A0A] flex items-center gap-1';
 
         fanLockBadge.innerHTML = '<i class="fa-solid fa-unlock mr-1"></i>Chỉnh tay (Manual)';
-        fanLockBadge.className = 'text-xs font-medium px-2.5 py-1 rounded-md bg-amber-50 text-amber-700 border border-amber-200';
-        manualFanControls.classList.remove('opacity-50', 'pointer-events-none');
-        manualBtns.forEach(b => b.disabled = false);
+        fanLockBadge.className = 'text-[10px] font-semibold px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 border border-amber-200';
+
+        if (isEsp32Connected) {
+          manualFanControls.classList.remove('opacity-40', 'pointer-events-none');
+          manualBtns.forEach(b => { if (b) b.disabled = false; });
+        } else {
+          manualFanControls.classList.add('opacity-40', 'pointer-events-none');
+          manualBtns.forEach(b => { if (b) b.disabled = true; });
+        }
       }
 
-      // 2. Hiển thị Cảm biến CO2 Datasheet & Gauge
-      const adc = state.currentAdc;
-      const ppm = state.co2Ppm;
-      document.getElementById('co2PpmText').textContent = ppm;
-      document.getElementById('adcValueText').textContent = adc;
-      document.getElementById('voltageText').textContent = `Điện áp: ~${state.voltage} V`;
+      // 2. Hiển thị Cảm biến CO2 & Gauge
+      const adc = isEsp32Connected ? state.currentAdc : 0;
+      const ppm = isEsp32Connected ? state.co2Ppm : 400;
+      document.getElementById('co2PpmText').textContent = isEsp32Connected ? ppm : '--';
+      document.getElementById('adcValueText').textContent = isEsp32Connected ? adc : '--';
+      document.getElementById('voltageText').textContent = isEsp32Connected ? `~${state.voltage}V` : 'Mất kết nối';
 
       const maxDash = 251.2;
-      const offset = maxDash - (adc / 4095) * maxDash;
+      // Vòng cung đo trực quan di chuyển theo PPM (từ 400 PPM đến mức tối đa)
+      const minPpm = 400;
+      const maxPpm = Math.max(3500, thresholds.th3 + 500);
+      const ppmRatio = Math.max(0, Math.min(1, (ppm - minPpm) / (maxPpm - minPpm)));
+      const offset = isEsp32Connected ? (maxDash - ppmRatio * maxDash) : maxDash;
       const gaugeArc = document.getElementById('gaugeArc');
       gaugeArc.style.strokeDashoffset = offset;
 
       const levelBadge = document.getElementById('levelBadge');
       const rules = [1, 2, 3, 4].map(i => document.getElementById('ruleRow' + i));
       rules.forEach(r => {
-        r.className = 'flex items-center justify-between p-2 rounded-md bg-[#FAFAFA] border border-[#E8E8EC] opacity-50 transition';
+        if (r) r.className = 'flex items-center justify-between px-2 py-1 rounded bg-[#FAFAFA] border border-[#E8E8EC] opacity-50 transition';
       });
 
-      if (state.level === 1) {
+      if (!isEsp32Connected) {
+        gaugeArc.setAttribute('stroke', '#9CA3AF');
+        levelBadge.textContent = 'Mất kết nối ESP32';
+        levelBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200';
+      } else if (state.level === 1) {
         gaugeArc.setAttribute('stroke', '#10B981');
         levelBadge.textContent = 'Mức 1 • Trong lành';
-        levelBadge.className = 'px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200';
-        rules[0].className = 'flex items-center justify-between p-2 rounded-md bg-emerald-50/50 border border-emerald-200 opacity-100 font-medium';
+        levelBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200';
+        if (rules[0]) rules[0].className = 'flex items-center justify-between px-2 py-1 rounded bg-emerald-50/50 border border-emerald-200 opacity-100 font-semibold';
       } else if (state.level === 2) {
         gaugeArc.setAttribute('stroke', '#F59E0B');
         levelBadge.textContent = 'Mức 2 • Cảnh báo nhẹ';
-        levelBadge.className = 'px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200';
-        rules[1].className = 'flex items-center justify-between p-2 rounded-md bg-amber-50/50 border border-amber-200 opacity-100 font-medium';
+        levelBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200';
+        if (rules[1]) rules[1].className = 'flex items-center justify-between px-2 py-1 rounded bg-amber-50/50 border border-amber-200 opacity-100 font-semibold';
       } else if (state.level === 3) {
         gaugeArc.setAttribute('stroke', '#F97316');
         levelBadge.textContent = 'Mức 3 • Ô nhiễm';
-        levelBadge.className = 'px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-orange-50 text-orange-700 border border-orange-200';
-        rules[2].className = 'flex items-center justify-between p-2 rounded-md bg-orange-50/50 border border-orange-200 opacity-100 font-medium';
+        levelBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-orange-50 text-orange-700 border border-orange-200';
+        if (rules[2]) rules[2].className = 'flex items-center justify-between px-2 py-1 rounded bg-orange-50/50 border border-orange-200 opacity-100 font-semibold';
       } else {
         gaugeArc.setAttribute('stroke', '#EF4444');
         levelBadge.textContent = 'Mức 4 • Nguy hiểm!';
-        levelBadge.className = 'px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200 animate-pulse';
-        rules[3].className = 'flex items-center justify-between p-2 rounded-md bg-rose-50/50 border border-rose-200 opacity-100 font-medium';
+        levelBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200 animate-pulse';
+        if (rules[3]) rules[3].className = 'flex items-center justify-between px-2 py-1 rounded bg-rose-50/50 border border-rose-200 opacity-100 font-semibold';
       }
 
-      // 3. Quạt Thông Gió Hầm Mỏ
-      const duty = Math.round((state.fanSpeed / 100) * PWM_MAX);
-      document.getElementById('fan1PercentText').textContent = state.fanSpeed + '%';
-      document.getElementById('fan2PercentText').textContent = state.fanSpeed + '%';
-      document.getElementById('fan1DutyText').textContent = duty;
-      document.getElementById('fan2DutyText').textContent = duty;
-
-      document.getElementById('manualFanSlider').value = state.fanSpeed;
-      document.getElementById('manualFanSliderLabel').textContent = `${state.fanSpeed}% (Duty: ${duty})`;
-
+      // 3. Quạt Thông Gió
       const fan1Icon = document.getElementById('fan1Icon');
       const fan2Icon = document.getElementById('fan2Icon');
       const fan1Badge = document.getElementById('fan1BadgeState');
       const fan2Badge = document.getElementById('fan2BadgeState');
 
-      if (state.fanSpeed <= 0) {
+      const effectiveFanSpeed = isEsp32Connected ? state.fanSpeed : 0;
+      const duty = Math.round((effectiveFanSpeed / 100) * PWM_MAX);
+
+      document.getElementById('fan1PercentText').textContent = effectiveFanSpeed + '%';
+      document.getElementById('fan2PercentText').textContent = effectiveFanSpeed + '%';
+      document.getElementById('fan1DutyText').textContent = duty;
+      document.getElementById('fan2DutyText').textContent = duty;
+
+      document.getElementById('manualFanSlider').value = effectiveFanSpeed;
+      document.getElementById('manualFanSliderLabel').textContent = `${effectiveFanSpeed}%`;
+
+      if (!isEsp32Connected) {
         fan1Icon.style.animationDuration = '0s';
         fan2Icon.style.animationDuration = '0s';
-        fan1Icon.className = 'fa-solid fa-fan text-2xl text-gray-300';
-        fan2Icon.className = 'fa-solid fa-fan text-2xl text-gray-300';
+        fan1Icon.className = 'fa-solid fa-fan text-lg text-gray-300';
+        fan2Icon.className = 'fa-solid fa-fan text-lg text-gray-300';
+        fan1Badge.textContent = 'Mất kết nối';
+        fan1Badge.className = 'absolute -bottom-1 px-1 bg-rose-50 text-[8px] font-bold rounded text-rose-600 border border-rose-200';
+        fan2Badge.textContent = 'Mất kết nối';
+        fan2Badge.className = 'absolute -bottom-1 px-1 bg-rose-50 text-[8px] font-bold rounded text-rose-600 border border-rose-200';
+      } else if (effectiveFanSpeed <= 0) {
+        fan1Icon.style.animationDuration = '0s';
+        fan2Icon.style.animationDuration = '0s';
+        fan1Icon.className = 'fa-solid fa-fan text-lg text-gray-300';
+        fan2Icon.className = 'fa-solid fa-fan text-lg text-gray-300';
         fan1Badge.textContent = 'Đã Tắt';
-        fan1Badge.className = 'absolute -bottom-1 px-1.5 bg-gray-100 text-[9px] font-medium rounded text-gray-500 border border-gray-200';
+        fan1Badge.className = 'absolute -bottom-1 px-1 bg-gray-100 text-[8px] font-bold rounded text-gray-500 border border-gray-200';
         fan2Badge.textContent = 'Đã Tắt';
-        fan2Badge.className = 'absolute -bottom-1 px-1.5 bg-gray-100 text-[9px] font-medium rounded text-gray-500 border border-gray-200';
+        fan2Badge.className = 'absolute -bottom-1 px-1 bg-gray-100 text-[8px] font-bold rounded text-gray-500 border border-gray-200';
       } else {
-        const duration = Math.max(0.2, 1.8 - (state.fanSpeed / 100) * 1.55).toFixed(2) + 's';
+        const duration = Math.max(0.2, 1.8 - (effectiveFanSpeed / 100) * 1.55).toFixed(2) + 's';
         fan1Icon.style.animationDuration = duration;
         fan2Icon.style.animationDuration = duration;
-        fan1Icon.className = 'fa-solid fa-fan text-2xl text-brand fan-spinning';
-        fan2Icon.className = 'fa-solid fa-fan text-2xl text-brand fan-spinning';
+        fan1Icon.className = 'fa-solid fa-fan text-lg text-brand fan-spinning';
+        fan2Icon.className = 'fa-solid fa-fan text-lg text-brand fan-spinning';
         fan1Badge.textContent = 'Đang chạy';
-        fan1Badge.className = 'absolute -bottom-1 px-1.5 bg-emerald-100 text-[9px] font-medium rounded text-emerald-700 border border-emerald-200';
+        fan1Badge.className = 'absolute -bottom-1 px-1 bg-emerald-100 text-[8px] font-bold rounded text-emerald-700 border border-emerald-200';
         fan2Badge.textContent = 'Đang chạy';
-        fan2Badge.className = 'absolute -bottom-1 px-1.5 bg-emerald-100 text-[9px] font-medium rounded text-emerald-700 border border-emerald-200';
+        fan2Badge.className = 'absolute -bottom-1 px-1 bg-emerald-100 text-[8px] font-bold rounded text-emerald-700 border border-emerald-200';
       }
 
-      // 4. Cụm 3 Đèn LED (XÓA BỎ MỌI NHÃN GPIO)
-      const ledStates = [state.led1, state.led2, state.led3];
+      // 4. Cụm 3 Đèn LED
+      const ledStates = isEsp32Connected ? [state.led1, state.led2, state.led3] : [false, false, false];
       ledStates.forEach((isOn, idx) => {
         const num = idx + 1;
         const bulb = document.getElementById(`led${num}Bulb`);
         const btn = document.getElementById(`btnLed${num}`);
+        if (!bulb || !btn) return;
         if (isOn) {
-          bulb.className = 'w-10 h-10 rounded-full bg-amber-100 border-2 border-amber-400 flex items-center justify-center transition-all duration-300 mb-1.5 shadow-[0_0_15px_rgba(251,191,36,0.6)]';
-          bulb.innerHTML = '<i class="fa-solid fa-lightbulb text-lg text-amber-500"></i>';
+          bulb.className = 'w-8 h-8 rounded-full bg-amber-100 border-2 border-amber-400 flex items-center justify-center transition-all duration-300 mb-1 shadow-[0_0_12px_rgba(251,191,36,0.6)]';
+          bulb.innerHTML = '<i class="fa-solid fa-lightbulb text-sm text-amber-500"></i>';
           btn.textContent = 'BẬT';
-          btn.className = 'mt-2 w-full py-1.5 rounded text-[10px] font-bold uppercase bg-amber-500 text-white border border-amber-500 disabled:opacity-70 transition cursor-pointer shadow-sm';
+          btn.className = 'mt-1 w-full py-0.5 rounded text-[9px] font-bold uppercase bg-amber-500 text-white border border-amber-500 disabled:opacity-40 transition cursor-pointer shadow-sm';
         } else {
-          bulb.className = 'w-10 h-10 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center transition-all duration-300 mb-1.5';
-          bulb.innerHTML = '<i class="fa-solid fa-lightbulb text-base text-gray-400"></i>';
+          bulb.className = 'w-8 h-8 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center transition-all duration-300 mb-1';
+          bulb.innerHTML = '<i class="fa-solid fa-lightbulb text-xs text-gray-400"></i>';
           btn.textContent = 'TẮT';
-          btn.className = 'mt-2 w-full py-1.5 rounded text-[10px] font-bold uppercase bg-white text-[#6B6B6B] border border-[#E8E8EC] disabled:opacity-50 transition cursor-pointer';
+          btn.className = 'mt-1 w-full py-0.5 rounded text-[9px] font-bold uppercase bg-white text-[#6B6B6B] border border-[#E8E8EC] disabled:opacity-40 transition cursor-pointer';
         }
       });
 
-      document.getElementById('ledStatusSummary').innerHTML =
-        `Đèn 1: <strong class="${state.led1 ? 'text-amber-600' : 'text-gray-400'}">${state.led1 ? 'BẬT' : 'TẮT'}</strong> | ` +
-        `Đèn 2: <strong class="${state.led2 ? 'text-amber-600' : 'text-gray-400'}">${state.led2 ? 'BẬT' : 'TẮT'}</strong> | ` +
-        `Đèn 3: <strong class="${state.led3 ? 'text-rose-600' : 'text-gray-400'}">${state.led3 ? 'BẬT' : 'TẮT'}</strong>`;
+      if (!isEsp32Connected) {
+        document.getElementById('ledStatusSummary').innerHTML = '<span class="text-rose-500 font-semibold">Chưa kết nối ESP32 - Tắt cả 3 đèn</span>';
+      } else {
+        document.getElementById('ledStatusSummary').innerHTML =
+          `Đ1: <strong class="${state.led1 ? 'text-amber-600' : 'text-gray-400'}">${state.led1 ? 'BẬT' : 'TẮT'}</strong> | ` +
+          `Đ2: <strong class="${state.led2 ? 'text-amber-600' : 'text-gray-400'}">${state.led2 ? 'BẬT' : 'TẮT'}</strong> | ` +
+          `Đ3: <strong class="${state.led3 ? 'text-rose-600' : 'text-gray-400'}">${state.led3 ? 'BẬT' : 'TẮT'}</strong>`;
+      }
 
       // 5. Còi Báo Động
       const buzzerCircle = document.getElementById('buzzerCircle');
       const buzzerIcon = document.getElementById('buzzerIcon');
       const buzzerLabel = document.getElementById('buzzerStateLabel');
 
-      if (state.buzzer) {
-        buzzerCircle.className = 'relative w-16 h-16 rounded-full bg-rose-50 border-2 border-rose-500 flex items-center justify-center transition-all duration-300 pulse-ring-effect shadow-[0_0_20px_rgba(239,68,68,0.3)]';
-        buzzerIcon.className = 'fa-solid fa-volume-high text-2xl text-rose-600 buzzer-shaking';
-        buzzerLabel.textContent = 'ĐANG BÁO ĐỘNG (BẬT)';
-        buzzerLabel.className = 'mt-2 text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-300';
-        triggerBeepSound(true);
+      const isBuzzerOn = isEsp32Connected && state.buzzer;
+
+      if (!isEsp32Connected) {
+        buzzerCircle.className = 'w-9 h-9 rounded-full bg-[#FAFAFA] border border-[#E8E8EC] flex items-center justify-center shrink-0 transition-all duration-300';
+        buzzerIcon.className = 'fa-solid fa-volume-off text-sm text-gray-400';
+        buzzerLabel.textContent = 'TẮT (MẤT KẾT NỐI)';
+        buzzerLabel.className = 'text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-200';
+      } else if (isBuzzerOn) {
+        buzzerCircle.className = 'w-9 h-9 rounded-full bg-rose-50 border-2 border-rose-500 flex items-center justify-center shrink-0 transition-all duration-300 pulse-ring-effect shadow-[0_0_15px_rgba(239,68,68,0.4)]';
+        buzzerIcon.className = 'fa-solid fa-volume-high text-sm text-rose-600 buzzer-shaking';
+        buzzerLabel.textContent = 'ĐANG BÁO ĐỘNG';
+        buzzerLabel.className = 'text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-300';
       } else {
-        buzzerCircle.className = 'relative w-16 h-16 rounded-full bg-[#FAFAFA] border border-[#E8E8EC] flex items-center justify-center transition-all duration-300';
-        buzzerIcon.className = 'fa-solid fa-volume-off text-2xl text-gray-400';
+        buzzerCircle.className = 'w-9 h-9 rounded-full bg-[#FAFAFA] border border-[#E8E8EC] flex items-center justify-center shrink-0 transition-all duration-300';
+        buzzerIcon.className = 'fa-solid fa-volume-off text-sm text-gray-400';
         buzzerLabel.textContent = 'IM LẶNG (TẮT)';
-        buzzerLabel.className = 'mt-2 text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-gray-100 text-[#6B6B6B]';
-        triggerBeepSound(false);
+        buzzerLabel.className = 'text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gray-100 text-[#6B6B6B]';
       }
     }
 
@@ -1504,15 +1092,18 @@ void loop() {
       const canvas = document.getElementById('adcChartCanvas');
       if (!canvas) return;
       const rect = canvas.parentElement.getBoundingClientRect();
-      canvas.width = rect.width - 16;
-      canvas.height = rect.height - 16;
+      if (rect.width <= 0 || rect.height <= 0) return;
+
+      canvas.width = rect.width - 8;
+      canvas.height = rect.height - 8;
 
       const ctx = canvas.getContext('2d');
       const w = canvas.width;
       const h = canvas.height;
       ctx.clearRect(0, 0, w, h);
 
-      // Các đường tham chiếu vẽ theo mức đặt (thresholds động)
+      // Tham chiếu mức đặt PPM
+      const maxScale = Math.max(3500, thresholds.th3 + 500);
       const lines = [
         { val: thresholds.th1, color: '#10B981', label: `${thresholds.th1}` },
         { val: thresholds.th2, color: '#F59E0B', label: `${thresholds.th2}` },
@@ -1522,36 +1113,36 @@ void loop() {
       ctx.lineWidth = 1;
       ctx.setLineDash([3, 3]);
       lines.forEach(t => {
-        const y = h - (t.val / 4095) * (h - 20) - 10;
-        ctx.strokeStyle = t.color + '66';
+        const y = h - (t.val / maxScale) * (h - 16) - 8;
+        ctx.strokeStyle = t.color + '88';
         ctx.beginPath();
-        ctx.moveTo(35, y);
-        ctx.lineTo(w - 6, y);
+        ctx.moveTo(30, y);
+        ctx.lineTo(w - 4, y);
         ctx.stroke();
 
         ctx.fillStyle = t.color;
-        ctx.font = '9px JetBrains Mono';
+        ctx.font = '8px JetBrains Mono';
         ctx.fillText(t.label, 2, y + 3);
       });
       ctx.setLineDash([]);
 
       if (adcHistory.length < 2) return;
 
-      const stepX = (w - 45) / (MAX_CHART_POINTS - 1);
+      const stepX = (w - 38) / (MAX_CHART_POINTS - 1);
       ctx.beginPath();
       adcHistory.forEach((val, idx) => {
-        const x = 38 + idx * stepX;
-        const y = h - (val / 4095) * (h - 20) - 10;
+        const x = 32 + idx * stepX;
+        const y = h - (val / maxScale) * (h - 16) - 8;
         if (idx === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       });
       ctx.strokeStyle = '#4F46E5';
-      ctx.lineWidth = 2.5;
+      ctx.lineWidth = 2;
       ctx.stroke();
 
-      const lastX = 38 + (adcHistory.length - 1) * stepX;
-      ctx.lineTo(lastX, h - 10);
-      ctx.lineTo(38, h - 10);
+      const lastX = 32 + (adcHistory.length - 1) * stepX;
+      ctx.lineTo(lastX, h - 8);
+      ctx.lineTo(32, h - 8);
       ctx.closePath();
       const grad = ctx.createLinearGradient(0, 0, 0, h);
       grad.addColorStop(0, 'rgba(79, 70, 229, 0.20)');
@@ -1561,7 +1152,7 @@ void loop() {
     }
 
     function clearChartHistory() {
-      adcHistory = [state.currentAdc];
+      adcHistory = [state.co2Ppm];
       drawChart();
     }
 
@@ -1572,8 +1163,8 @@ void loop() {
 
       const timeStr = new Date().toLocaleTimeString();
       const line = document.createElement('div');
-      line.className = 'leading-tight py-0.5 break-all text-[11px] hover:bg-white/5 rounded px-1 transition';
-      line.textContent = `[${timeStr}] CO2: ${state.co2Ppm} PPM | ADC: ${state.currentAdc} (~${state.voltage}V) | Mức: ${state.level} | Quạt: ${state.fanSpeed}% | Còi: ${state.buzzer ? 'BẬT' : 'TẮT'}`;
+      line.className = 'leading-tight py-0.5 break-all text-[10px] hover:bg-white/5 rounded px-1 transition';
+      line.textContent = `[${timeStr}] CO2: ${state.co2Ppm} PPM | ADC: ${state.currentAdc} | Mức: ${state.level} | Quạt: ${state.fanSpeed}% | Còi: ${state.buzzer ? 'BẬT' : 'TẮT'}`;
       box.appendChild(line);
 
       while (box.children.length > 50) {
@@ -1585,57 +1176,8 @@ void loop() {
     function clearSerialMonitor() {
       const box = document.getElementById('serialLogBox');
       if (box) {
-        box.innerHTML = '<div class="text-slate-500 italic py-1">// Đã làm mới nhật ký log. Chờ bản tin mới...</div>';
+        box.innerHTML = '<div class="text-slate-500 italic py-0.5">// Đã làm mới nhật ký log. Chờ bản tin mới...</div>';
       }
-    }
-
-    // --- WEB AUDIO SYNTH ---
-    function toggleWebAudio() {
-      state.webAudioEnabled = !state.webAudioEnabled;
-      const icon = document.getElementById('soundIcon');
-      const text = document.getElementById('soundText');
-      if (state.webAudioEnabled) {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        icon.className = 'fa-solid fa-volume-high text-emerald-600';
-        text.textContent = 'Âm còi: Bật';
-        showToast('Đã kích hoạt còi giả lập trình duyệt');
-      } else {
-        icon.className = 'fa-solid fa-volume-xmark text-[#9C9C9C]';
-        text.textContent = 'Âm còi: Tắt';
-        triggerBeepSound(false);
-      }
-    }
-
-    function triggerBeepSound(shouldPlay) {
-      if (!state.webAudioEnabled || !audioCtx) shouldPlay = false;
-      if (shouldPlay) {
-        if (!beepOscillator) {
-          beepOscillator = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          beepOscillator.type = 'square';
-          beepOscillator.frequency.setValueAtTime(2400, audioCtx.currentTime);
-          gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-          beepOscillator.connect(gain);
-          gain.connect(audioCtx.destination);
-          beepOscillator.start();
-        }
-      } else {
-        if (beepOscillator) {
-          try { beepOscillator.stop(); beepOscillator.disconnect(); } catch (e) {}
-          beepOscillator = null;
-        }
-      }
-    }
-
-    function copyArduinoCode() {
-      const codeText = document.getElementById('arduinoCodeBlock').innerText;
-      const tempArea = document.createElement('textarea');
-      tempArea.value = codeText;
-      document.body.appendChild(tempArea);
-      tempArea.select();
-      document.execCommand('copy');
-      document.body.removeChild(tempArea);
-      showToast('Đã sao chép mã nguồn ESP32 V2.0!');
     }
 
     window.onload = function () {
